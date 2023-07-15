@@ -58,26 +58,16 @@ class TriggerPipeline(BaseOperator):
     def run_step(self, step, ai_context: AiContext):
         params = step['parameters']
         pipeline_id = params.get('pipeline_id')
+        pipeline_label = params.get('pipeline_label')
         pipeline_input = ai_context.get_input('pipeline_input', self) or ''
 
-        self.trigger(pipeline_id, pipeline_input, ai_context)
-
-    def trigger(self, pipeline_id, pipeline_input, ai_context):
-        '''
-        The pipeline that you are trying to trigger remotely must have exactly one input operator at the start
-        and one output at the end in order to function correctly when being triggered through this operator.
-        '''
-
-        if pipeline_id:
-            ai_context.add_to_log(
-                f"Triggering pipeline with saved item id {pipeline_id}.")
-
-            output = ai_context.trigger_pipeline(pipeline_id, pipeline_input)
-
-            ai_context.set_output('output', output, self)
-
-            ai_context.add_to_log(
-                f"Pipeline with saved item id {pipeline_id} ran successfully with output: {output}.")
-        else:
+        if not pipeline_id:
             ai_context.set_output('output', '', self)
-            ai_context.add_to_log("No saved item id to trigger pipeline.")
+            ai_context.add_to_log("No pipeline id to trigger pipeline.")
+            return
+
+        # The pipeline that you are trying to trigger remotely must have exactly one input operator at the start
+        # and one output at the end in order to function correctly when being triggered through this operator.
+        output = ai_context.trigger_pipeline(pipeline_id, pipeline_input, pipeline_label)
+        
+        ai_context.set_output('output', output, self)
