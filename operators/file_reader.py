@@ -35,10 +35,8 @@ class FileReader(BaseOperator):
     def declare_parameters():
         return [
             {
-                "name": "uploaded_file_name",
-                "data_type": "string",
-                "placeholder": "Ex. example.pdf",
-                "description": "Enter the name + extension of the uploaded file"
+                "name": "uploaded_file",
+                "data_type": "File",
             }
         ]
 
@@ -64,7 +62,7 @@ class FileReader(BaseOperator):
     def run_step(self, step, ai_context: AiContext):
         params = step['parameters']
 
-        param_file_name = params.get('uploaded_file_name')
+        param_file_name = params.get('uploaded_file')
         input_file_name = ai_context.get_input('uploaded_file_name', self)
 
         uploaded_file_name = param_file_name or input_file_name
