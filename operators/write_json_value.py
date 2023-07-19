@@ -41,8 +41,7 @@ class WriteJsonValue(BaseOperator):
             },
             {
                 "name": "json_value",
-                "data_type": "string",
-                "placeholder": "Ex: 'testValue'",
+                "data_type": "any",
                 "description": "This can a string representing a json object, a json array, or a string"
             }
         ]
