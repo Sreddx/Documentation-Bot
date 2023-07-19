@@ -72,3 +72,4 @@ class InputOperator(BaseOperator):
     def run_step(self, step, ai_context):
         p = step['parameters']
         ai_context.set_output('output', p['value'], self)
+        ai_context.add_to_log("Input operator received value: {}".format(p['value']))
