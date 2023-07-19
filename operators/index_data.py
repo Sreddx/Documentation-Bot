@@ -9,7 +9,7 @@ from .util import get_max_tokens_for_model
 from ai_context import AiContext
 
 
-# This is the size of each chunk in terms of tokens.I chose 1k because a small query could 
+# This is the size of each chunk in terms of tokens.I chose 1k because a small query could
 # hypothetically fit 4 chunks in the context. Feels like a good balance between speed and accuracy.
 EMBEDDING_CTX_LENGTH = 1000
 EMBEDDING_ENCODING = 'cl100k_base'
@@ -19,12 +19,16 @@ class IndexData(BaseOperator):
     @staticmethod
     def declare_name():
         return 'Index Data'
-    
+
     @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.MANIPULATE_DATA.value
-    
-    @staticmethod    
+
+    @staticmethod
+    def declare_icon():
+        return "index.png"
+
+    @staticmethod
     def declare_parameters():
         return [
             {
@@ -33,8 +37,8 @@ class IndexData(BaseOperator):
                 "description": "Do you want to cache the embeddings?",
             }
         ]
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_inputs():
         return [
             {
@@ -42,8 +46,8 @@ class IndexData(BaseOperator):
                 "data_type": "string",
             }
         ]
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_outputs():
         return [
             {
@@ -61,15 +65,16 @@ class IndexData(BaseOperator):
     ):
         text = ai_context.get_input('text', self)
         text = self.clean_text(text)
-        should_cache_embeddings = step['parameters'].get('should_cache_embeddings', False)
-        embeddings_dict = self.len_safe_get_embedding(text, ai_context, should_cache_embeddings=should_cache_embeddings)
+        should_cache_embeddings = step['parameters'].get(
+            'should_cache_embeddings', False)
+        embeddings_dict = self.len_safe_get_embedding(
+            text, ai_context, should_cache_embeddings=should_cache_embeddings)
         ai_context.set_output('vector_index', embeddings_dict, self)
-        ai_context.add_to_log("Indexing complete with {} chunk embeddings".format(len(embeddings_dict)))
-    
-    
+        ai_context.add_to_log(
+            "Indexing complete with {} chunk embeddings".format(len(embeddings_dict)))
+
     def clean_text(self, text):
         return text.replace("\n", " ")
-
 
     def batched(self, iterable, n):
         if n < 1:
@@ -77,7 +82,6 @@ class IndexData(BaseOperator):
         it = iter(iterable)
         while (batch := tuple(islice(it, n))):
             yield batch
-
 
     def chunked_tokens(self, text, encoding_name, chunk_length):
         encoding = tiktoken.get_encoding(encoding_name)
@@ -87,20 +91,19 @@ class IndexData(BaseOperator):
             decoded_chunk = encoding.decode(chunk)  # Decode the chunk
             yield decoded_chunk
 
-
     def len_safe_get_embedding(
-        self, 
-        text, 
+        self,
+        text,
         ai_context,
-        max_tokens=EMBEDDING_CTX_LENGTH, 
+        max_tokens=EMBEDDING_CTX_LENGTH,
         encoding_name=EMBEDDING_ENCODING,
         should_cache_embeddings=False
     ):
         chunk_embeddings = {}
         for chunk in self.chunked_tokens(text, encoding_name=encoding_name, chunk_length=max_tokens):
-            embedding = ai_context.embed_text(chunk, cache_response=should_cache_embeddings)
+            embedding = ai_context.embed_text(
+                chunk, cache_response=should_cache_embeddings)
             embedding_key = tuple(embedding)  # Convert numpy array to tuple
             chunk_embeddings[embedding_key] = chunk
 
         return chunk_embeddings
-

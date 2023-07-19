@@ -5,14 +5,19 @@ from email.mime.text import MIMEText
 from .base_operator import BaseOperator
 from ai_context import AiContext
 
+
 class GmailSender(BaseOperator):
     @staticmethod
     def declare_name():
         return 'GmailSender'
-    
+
     @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.ACT.value
+
+    @staticmethod
+    def declare_icon():
+        return "gmail.png"
 
     @staticmethod
     def declare_parameters():
@@ -46,7 +51,7 @@ class GmailSender(BaseOperator):
                 "data_type": "string",
             }
         ]
-        
+
     def run_step(
         self,
         step,
@@ -58,14 +63,15 @@ class GmailSender(BaseOperator):
         send_as_html = False  # Default to False
         if send_as_html_str and send_as_html_str.lower() == 'true':
             send_as_html = True
-        
+
         email_subject = "AgentHub Run Notification"
         email_body = ai_context.get_input('email_body', self)
         sender = ai_context.get_secret('gmail_sender')
         password = ai_context.get_secret('gmail_password')
         print(f"sender: {sender}, password: {password}")
 
-        email_status = self.send_email(email_subject, email_body, sender, [recipient_email], password, send_as_html, ai_context)
+        email_status = self.send_email(email_subject, email_body, sender, [
+                                       recipient_email], password, send_as_html, ai_context)
         ai_context.set_output('email_status', email_status, self)
 
     def send_email(self, subject, body, sender, recipients, password, send_as_html, ai_context):

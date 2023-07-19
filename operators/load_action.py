@@ -6,12 +6,16 @@ class LoadAction(BaseOperator):
     @staticmethod
     def declare_name():
         return 'Load Action'
-    
+
     @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.DB.value
-    
-    @staticmethod    
+
+    @staticmethod
+    def declare_icon():
+        return "action.png"
+
+    @staticmethod
     def declare_parameters():
         return [
             {
@@ -20,8 +24,8 @@ class LoadAction(BaseOperator):
                 "placeholder": "Enter the id of your stored action (or pass it as input))",
             }
         ]
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_inputs():
         return [
             {
@@ -31,8 +35,8 @@ class LoadAction(BaseOperator):
 
             }
         ]
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_outputs():
         return [
             {
@@ -54,5 +58,6 @@ class LoadAction(BaseOperator):
         action_id = action_id_input if action_id_input is not None else action_id_param
 
         action_data = ai_context.retrieve_action(action_id)
-        ai_context.add_to_log("Loaded action {} with data {}".format(action_id, action_data))
+        ai_context.add_to_log(
+            "Loaded action {} with data {}".format(action_id, action_data))
         ai_context.set_output('action_data', action_data, self)

@@ -18,6 +18,10 @@ class WriteJsonValue(BaseOperator):
         return "Writes a value to a JSON object given a JSON string, key, and value"
 
     @staticmethod
+    def declare_icon():
+        return "json.png"
+
+    @staticmethod
     def declare_parameters():
         return [
             {

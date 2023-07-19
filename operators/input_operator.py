@@ -20,6 +20,10 @@ class InputOperator(BaseOperator):
         return BaseOperator.OperatorCategory.MISC.value
 
     @staticmethod
+    def declare_icon():
+        return "input.png"
+
+    @staticmethod
     def declare_parameters():
         return [
             {
@@ -72,4 +76,5 @@ class InputOperator(BaseOperator):
     def run_step(self, step, ai_context):
         p = step['parameters']
         ai_context.set_output('output', p['value'], self)
-        ai_context.add_to_log("Input operator received value: {}".format(p['value']))
+        ai_context.add_to_log(
+            "Input operator received value: {}".format(p['value']))

@@ -11,10 +11,14 @@ class Tweet(BaseOperator):
     @staticmethod
     def declare_name():
         return 'Tweet'
-    
+
     @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.ACT.value
+
+    @staticmethod
+    def declare_icon():
+        return "twitter.png"
 
     @staticmethod
     def declare_parameters():
@@ -44,10 +48,10 @@ class Tweet(BaseOperator):
                 "data_type": "string",
             }
         ]
-        
+
     def set_twitter_keys_and_secrets(self, ai_context):
         app_secrets = json.loads(ai_context.get_secret('twitter_app_auth'))
-        user_secrets = json.loads(ai_context.get_secret('twitter_api_key'))        
+        user_secrets = json.loads(ai_context.get_secret('twitter_api_key'))
         self.bearer_token = app_secrets['BEARER_TOKEN']
         self.consumer_key = app_secrets['CONSUMER_KEY']
         self.consumer_secret = app_secrets['CONSUMER_SECRET']
@@ -62,7 +66,7 @@ class Tweet(BaseOperator):
         params = step['parameters']
         tweet_text = ai_context.get_input('tweet_text', self)
         remove_hashtags_str = params.get('remove_hashtags')
-        
+
         remove_hashtags = False  # Default to False
         if remove_hashtags_str and remove_hashtags_str.lower() == 'true':
             remove_hashtags = True
@@ -71,7 +75,7 @@ class Tweet(BaseOperator):
         url = ai_context.storage.get('ingested_url', '')
 
         self.set_twitter_keys_and_secrets(ai_context)
-        
+
         if remove_hashtags:
             tweet_text = self.trim_all_trailing_hashtags(tweet_text)
 
@@ -79,13 +83,13 @@ class Tweet(BaseOperator):
         ai_context.set_output('tweet_status', tweet_status, self)
         if url:  # only add to memory if there's a URL
             ai_context.memory_add_to_list('tweeted_links', url)
-        
+
     def trim_all_trailing_hashtags(self, text):
         words = text.split()
         while words[-1].startswith('#'):
             words = words[:-1]
         return ' '.join(words)
-         
+
     def trim_trailing_hashtags(self, text, url):
         words = text.split()
         while len(' '.join(words)) + len(url) > 280:
@@ -95,17 +99,16 @@ class Tweet(BaseOperator):
                 break
         return ' '.join(words)
 
-
     def send_tweet(self, tweet_text, url, ai_context):
         client = tweepy.Client(bearer_token=self.bearer_token)
         client = tweepy.Client(
             consumer_key=self.consumer_key, consumer_secret=self.consumer_secret,
             access_token=self.access_token, access_token_secret=self.access_token_secret
         )
-                
+
         # If tweet is too long, remove trailing hashtags
         tweet_text = self.trim_trailing_hashtags(tweet_text, url)
-            
+
         formatted_tweet_text = f"{tweet_text}\n{url}"
 
         ai_context.add_to_log(f'Tweeting: {formatted_tweet_text}')
@@ -115,11 +118,10 @@ class Tweet(BaseOperator):
             )
             output = f"Tweet is live at: https://twitter.com/user/status/{response.data['id']}"
             ai_context.add_to_log(output, color='green')
-            
-        except tweepy.TweepyException  as e:
+
+        except tweepy.TweepyException as e:
             print(str(e))
             output = f"Error sending tweet: {str(e)}"
             ai_context.add_to_log(output, color='red')
-            
-        return output
 
+        return output

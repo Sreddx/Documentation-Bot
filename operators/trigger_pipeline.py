@@ -16,6 +16,10 @@ class TriggerPipeline(BaseOperator):
         return "Triggers another pipeline with provided input and returns its output"
 
     @staticmethod
+    def declare_icon():
+        return "play.png"
+
+    @staticmethod
     def declare_allow_batch():
         return True
 
@@ -68,6 +72,7 @@ class TriggerPipeline(BaseOperator):
 
         # The pipeline that you are trying to trigger remotely must have exactly one input operator at the start
         # and one output at the end in order to function correctly when being triggered through this operator.
-        _, _, output = ai_context.trigger_pipeline(pipeline_id, pipeline_input, pipeline_label)
-        
+        _, _, output = ai_context.trigger_pipeline(
+            pipeline_id, pipeline_input, pipeline_label)
+
         ai_context.set_output('output', output, self)

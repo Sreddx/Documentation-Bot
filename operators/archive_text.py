@@ -15,6 +15,10 @@ class ArchiveText(BaseOperator):
         return BaseOperator.OperatorCategory.DB.value
 
     @staticmethod
+    def declare_icon():
+        return "archive.png"
+
+    @staticmethod
     def declare_parameters():
         return [
             {

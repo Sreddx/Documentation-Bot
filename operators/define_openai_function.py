@@ -14,6 +14,10 @@ class DefineOpenAiFunction(BaseOperator):
         return BaseOperator.OperatorCategory.MANIPULATE_DATA.value
 
     @staticmethod
+    def declare_icon():
+        return "function.png"
+
+    @staticmethod
     def declare_parameters():
         return [
             {

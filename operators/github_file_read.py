@@ -12,16 +12,20 @@ class GitHubFileReader(BaseOperator):
     @staticmethod
     def declare_name():
         return 'Read files from GitHub'
-    
+
     @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.CONSUME_DATA.value
-    
-    @staticmethod    
+
+    @staticmethod
+    def declare_icon():
+        return "github.png"
+
+    @staticmethod
     def declare_parameters():
         return [
             {
-                "name": "repo_name", 
+                "name": "repo_name",
                 "data_type": "string",
                 "placeholder": "user_name/repository_name"
             },
@@ -42,12 +46,12 @@ class GitHubFileReader(BaseOperator):
                 "placeholder": "Enter the branch (default is main)"
             }
         ]
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_inputs():
         return []
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_outputs():
         return [
             {
@@ -61,14 +65,13 @@ class GitHubFileReader(BaseOperator):
         ]
 
     def run_step(
-        self, 
-        step, 
-        ai_context : AiContext
+        self,
+        step,
+        ai_context: AiContext
     ):
         params = step['parameters']
         self.read_github_files(params, ai_context)
-            
-            
+
     def read_github_files(self, params, ai_context):
         repo_name = params['repo_name']
         folders = params.get('folders').replace(" ", "").split(',')
@@ -107,7 +110,8 @@ class GitHubFileReader(BaseOperator):
         for folder_path in folders:
             bfs_fetch_files(folder_path)
 
-        ai_context.add_to_log(f"{self.declare_name()} Fetched {len(file_names)} files from GitHub repo {repo_name}:\n\r{file_names}", color='blue', save=True)
+        ai_context.add_to_log(
+            f"{self.declare_name()} Fetched {len(file_names)} files from GitHub repo {repo_name}:\n\r{file_names}", color='blue', save=True)
 
         ai_context.set_output('file_names', file_names, self)
         ai_context.set_output('file_contents', file_contents, self)

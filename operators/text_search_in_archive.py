@@ -15,6 +15,10 @@ class TextSearchInArchive(BaseOperator):
         return BaseOperator.OperatorCategory.DB.value
 
     @staticmethod
+    def declare_icon():
+        return "text_search.png"
+
+    @staticmethod
     def declare_parameters():
         return [
             {

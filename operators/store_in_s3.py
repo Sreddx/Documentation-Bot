@@ -14,12 +14,16 @@ class StoreInS3(BaseOperator):
     @staticmethod
     def declare_name():
         return 'Store in S3'
-    
+
     @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.DB.value
-    
-    @staticmethod    
+
+    @staticmethod
+    def declare_icon():
+        return "amazon.png"
+
+    @staticmethod
     def declare_parameters():
         return [
             {
@@ -34,15 +38,15 @@ class StoreInS3(BaseOperator):
                 "data_type": "string",
                 "placeholder": "example-s3-bucket-name",
                 "description": "S3 bucket name",
-            },            
+            },
             {
                 "name": "overwrite",
                 "data_type": "boolean",
                 "description": "By default if a file with the same key exists, it will not be overwritten. Check this box to overwrite."
             }
         ]
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_inputs():
         return [
             {
@@ -50,14 +54,14 @@ class StoreInS3(BaseOperator):
                 "data_type": "string"
             }
         ]
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_outputs():
         return [
             {
                 "name": "s3_file_uri",
                 "data_type": "string",
-            }            
+            }
         ]
 
     @staticmethod
@@ -77,16 +81,17 @@ class StoreInS3(BaseOperator):
     def upload_to_s3(file_url, file_name, overwrite, s3_bucket, aws_credentials):
         response = requests.get(file_url)
 
-        s3 = boto3.client('s3', 
-                        aws_access_key_id=aws_credentials['aws_access_key_id'], 
-                        aws_secret_access_key=aws_credentials['aws_secret_access_key'], 
-                        region_name=aws_credentials['aws_region_name'])
+        s3 = boto3.client('s3',
+                          aws_access_key_id=aws_credentials['aws_access_key_id'],
+                          aws_secret_access_key=aws_credentials['aws_secret_access_key'],
+                          region_name=aws_credentials['aws_region_name'])
 
         try:
             s3.head_object(Bucket=s3_bucket, Key=file_name)
             # If an exception is raised, the object exists
             if not overwrite:
-                raise ValueError('Object already exists and overwrite is set to False')
+                raise ValueError(
+                    'Object already exists and overwrite is set to False')
         except ClientError:
             # If the object does not exist, head_object will raise a ClientError
             pass
@@ -119,10 +124,12 @@ class StoreInS3(BaseOperator):
 
         # Validation
         if any(not value for value in aws_credentials.values()) or not s3_bucket:
-            raise ValueError('All AWS credentials and S3 bucket must be provided')
+            raise ValueError(
+                'All AWS credentials and S3 bucket must be provided')
 
         # Upload file to S3 and set output
-        s3_file_uri = StoreInS3.upload_to_s3(file_url, file_name, overwrite, s3_bucket, aws_credentials)
+        s3_file_uri = StoreInS3.upload_to_s3(
+            file_url, file_name, overwrite, s3_bucket, aws_credentials)
 
         ai_context.set_output('s3_file_uri', s3_file_uri, self)
         ai_context.add_to_log(f'Successfully saved file at {s3_file_uri}!')

@@ -2,6 +2,7 @@ from .base_operator import BaseOperator
 from ai_context import AiContext
 from urllib.parse import quote_plus
 
+
 class EncodeURL(BaseOperator):
     @staticmethod
     def declare_name():
@@ -10,6 +11,10 @@ class EncodeURL(BaseOperator):
     @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.MANIPULATE_DATA.value
+
+    @staticmethod
+    def declare_icon():
+        return "url.png"
 
     @staticmethod
     def declare_parameters():
@@ -50,4 +55,5 @@ class EncodeURL(BaseOperator):
             ai_context.set_output('encoded_url', encoded_url, self)
 
         except Exception as e:
-            ai_context.add_to_log(f"Failed to encode URL. Error: {e}", color='red') 
+            ai_context.add_to_log(
+                f"Failed to encode URL. Error: {e}", color='red')

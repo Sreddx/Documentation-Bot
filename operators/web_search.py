@@ -18,6 +18,10 @@ class WebSearch(BaseOperator):
         return BaseOperator.OperatorCategory.CONSUME_DATA.value
 
     @staticmethod
+    def declare_icon():
+        return "web_search.png"
+
+    @staticmethod
     def declare_parameters():
         return [
             {

@@ -24,6 +24,10 @@ class WebsiteScraper(BaseOperator):
         return "Scrapes the content of a website from the URL. Note: Javascript generated text is not yet supported."
 
     @staticmethod
+    def declare_icon():
+        return "web_scraper.png"
+
+    @staticmethod
     def declare_allow_batch():
         return True
 

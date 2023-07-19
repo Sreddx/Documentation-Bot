@@ -14,6 +14,10 @@ class ReadJsonValues(BaseOperator):
         return BaseOperator.OperatorCategory.MANIPULATE_DATA.value
 
     @staticmethod
+    def declare_icon():
+        return "json.png"
+
+    @staticmethod
     def declare_parameters():
         return [
             {

@@ -14,6 +14,10 @@ class OutputOperator(BaseOperator):
         """
 
     @staticmethod
+    def declare_icon():
+        return "output_icon.png"
+
+    @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.MISC.value
 

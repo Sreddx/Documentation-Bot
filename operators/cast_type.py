@@ -15,6 +15,10 @@ class CastType(BaseOperator):
         return BaseOperator.OperatorCategory.MANIPULATE_DATA.value
 
     @staticmethod
+    def declare_icon():
+        return "cast.png"
+
+    @staticmethod
     def declare_parameters():
         return [
             {

@@ -5,16 +5,21 @@ import json
 from .base_operator import BaseOperator
 from ai_context import AiContext
 
+
 class ScrapeHackerNews(BaseOperator):
     @staticmethod
     def declare_name():
         return 'Scrape Hacker News'
-    
+
     @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.CONSUME_DATA.value
-    
-    @staticmethod    
+
+    @staticmethod
+    def declare_icon():
+        return "hacker_news.png"
+
+    @staticmethod
     def declare_parameters():
         return [
             {
@@ -28,12 +33,12 @@ class ScrapeHackerNews(BaseOperator):
                 "placeholder": "Enter the number of pages to scrape (max 5 pages)"
             }
         ]
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_inputs():
         return []
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_outputs():
         return [
             {
@@ -43,9 +48,9 @@ class ScrapeHackerNews(BaseOperator):
         ]
 
     def run_step(
-        self, 
-        step, 
-        ai_context: AiContext, 
+        self,
+        step,
+        ai_context: AiContext,
     ):
         params = step['parameters']
         self.scrape_hacker_news(params, ai_context)
@@ -56,18 +61,21 @@ class ScrapeHackerNews(BaseOperator):
         excluded_words = ['AskHN', 'ShowHN', 'LaunchHN']
 
         if num_pages > 5:
-            ai_context.add_to_log(f"Maximum limit of 5 pages exceeded. Please provide a number up to 5.")
+            ai_context.add_to_log(
+                f"Maximum limit of 5 pages exceeded. Please provide a number up to 5.")
             return
 
         title_link_dict = {}
 
         for page_num in range(1, num_pages + 1):
-            response = requests.get(f'https://news.ycombinator.com/?p={page_num}')
+            response = requests.get(
+                f'https://news.ycombinator.com/?p={page_num}')
             bs = BeautifulSoup(response.text, "html.parser")
             posts = bs.select('tr.athing')  # select each post
 
             for post in posts:
-                title_element = post.select_one('.titleline > a')  # select the title element within the post
+                # select the title element within the post
+                title_element = post.select_one('.titleline > a')
                 if title_element:
                     title = title_element.text
                     link = title_element['href']
@@ -82,6 +90,7 @@ class ScrapeHackerNews(BaseOperator):
 
                     title_link_dict[title] = link
 
-        ai_context.set_output('title_link_dict', json.dumps(title_link_dict), self)
-        ai_context.add_to_log(f"{num_pages} page(s) of Hacker News have been scraped and filtered.")
-
+        ai_context.set_output(
+            'title_link_dict', json.dumps(title_link_dict), self)
+        ai_context.add_to_log(
+            f"{num_pages} page(s) of Hacker News have been scraped and filtered.")

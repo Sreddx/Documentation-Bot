@@ -13,12 +13,16 @@ class HybridSearch(BaseOperator):
     @staticmethod
     def declare_name():
         return 'Hybrid Search'
-    
+
     @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.AI.value
-    
-    @staticmethod    
+
+    @staticmethod
+    def declare_icon():
+        return "text_search.png"
+
+    @staticmethod
     def declare_parameters():
         return [
             {
@@ -26,8 +30,8 @@ class HybridSearch(BaseOperator):
                 "data_type": "string",
             }
         ]
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_inputs():
         return [
             {
@@ -35,11 +39,11 @@ class HybridSearch(BaseOperator):
                 "data_type": "{}",
             }
         ]
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_outputs():
         return [
-             {
+            {
                 "name": "hybrid_search_chatgpt_response",
                 "data_type": "string",
             }
@@ -53,9 +57,9 @@ class HybridSearch(BaseOperator):
         params = step['parameters']
         query = params.get('query')
         query_emb = ai_context.embed_text(query)
-        
+
         sorted_chunks = sort_chunks_by_similarity(
-            query_emb, 
+            query_emb,
             ai_context.get_input('vector_index', self)
         )
         prompt = f"Given the following context, and any prior knowledge you have, {query}?"
@@ -63,19 +67,20 @@ class HybridSearch(BaseOperator):
         token_limit = get_max_tokens_for_model(ai_context.get_model_name())
         # We reserve 250 tokens for the response.
         token_budget = token_limit - 250 - num_tokens_spent
-        
+
         selected_chunks = select_most_relevant_chunks(
-            sorted_chunks, 
-            token_budget, 
+            sorted_chunks,
+            token_budget,
             ai_context.get_model_name()
         )
-        ai_context.add_to_log("{} embeddings were fit into the prompt".format(len(selected_chunks)))
-        
+        ai_context.add_to_log(
+            "{} embeddings were fit into the prompt".format(len(selected_chunks)))
+
         selected_chunks_str = str(selected_chunks)
-        prompt += f" context: {selected_chunks_str}"  
-              
+        prompt += f" context: {selected_chunks_str}"
+
         ai_response = ai_context.run_chat_completion(prompt=prompt)
-        ai_context.set_output('hybrid_search_chatgpt_response', ai_response, self)
-        ai_context.add_to_log(f'Response from ChatGPT + Hybrid Search: {ai_response}')
-
-
+        ai_context.set_output(
+            'hybrid_search_chatgpt_response', ai_response, self)
+        ai_context.add_to_log(
+            f'Response from ChatGPT + Hybrid Search: {ai_response}')

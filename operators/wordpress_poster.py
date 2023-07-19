@@ -17,6 +17,10 @@ class WordpressPoster(BaseOperator):
         return BaseOperator.OperatorCategory.ACT.value
 
     @staticmethod
+    def declare_icon():
+        return "wordpress.png"
+
+    @staticmethod
     def declare_parameters():
         return [
             {

@@ -7,16 +7,20 @@ class AskChatGpt(BaseOperator):
     @staticmethod
     def declare_name():
         return 'Ask ChatGPT'
-    
+
     @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.AI.value
-        
+
+    @staticmethod
+    def declare_icon():
+        return "openai.png"
+
     @staticmethod
     def declare_allow_batch():
         return True
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_parameters():
         return [
             {
@@ -35,8 +39,8 @@ class AskChatGpt(BaseOperator):
                 "placeholder": "Enter max tokens for response"
             }
         ]
-     
-    @staticmethod   
+
+    @staticmethod
     def declare_inputs():
         return [
             {
@@ -54,10 +58,10 @@ class AskChatGpt(BaseOperator):
                 "data_type": "string",
                 "optional": "1"
             },
-            
+
         ]
-    
-    @staticmethod 
+
+    @staticmethod
     def declare_outputs():
         return [
             {
@@ -73,33 +77,35 @@ class AskChatGpt(BaseOperator):
         input_context = ai_context.get_input('context', self)
         parameter_context = p.get('context')
 
-        #Currently only supports one function as input. Will refactor once multiple inputs are supported for operators.
+        # Currently only supports one function as input. Will refactor once multiple inputs are supported for operators.
         function = ai_context.get_input('function', self)
-        
+
         context = ''
         if input_context:
             context += f'[{input_context}]'
-        
+
         if parameter_context:
             context += f'[{parameter_context}]'
 
         if context:
             question = f'Given the context: {context}, answer the question or complete the following task: {question}'
-            
+
         if function:
             functions = [json.loads(function)] if function else None
-            ai_response = ai_context.run_chat_completion(prompt=question, functions=functions)
-        
+            ai_response = ai_context.run_chat_completion(
+                prompt=question, functions=functions)
+
         else:
             ai_response = ai_context.run_chat_completion(prompt=question)
-        
+
         ai_response = str(ai_response)
-        
+
         if function:
             ai_response = self.function_response_to_json(ai_response)
 
         ai_context.set_output('chatgpt_response', ai_response, self)
-        ai_context.add_to_log(f'Response from ChatGPT: {ai_response}', save=True)
+        ai_context.add_to_log(
+            f'Response from ChatGPT: {ai_response}', save=True)
 
     def function_response_to_json(self, response):
         try:
