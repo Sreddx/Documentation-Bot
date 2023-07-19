@@ -12,6 +12,8 @@ pymupdf
 requests
 tabula-py
 PyPDF2
+reportlab
+python-docx
 tiktoken
 shortuuid
 spacy
