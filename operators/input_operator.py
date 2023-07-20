@@ -43,7 +43,7 @@ class InputOperator(BaseOperator):
             },
             {
                 "name": "input_type",
-                "data_type": "enum(text,number)",
+                "data_type": "enum(text,number, file)",
                 "description": "Type of the input value.",
                 "condition": "show_as_user_input == true"
             },
