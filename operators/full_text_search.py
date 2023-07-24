@@ -87,6 +87,7 @@ class FullTextSearch(BaseOperator):
     def run_step(self, step, ai_context):
         p = step['parameters']
         text = ai_context.get_input('text', self)
+        text = self.prepare_text_for_search(text)
         query = ai_context.get_input('query', self) or p['query']
         nresults = int(p.get('nresults') or 5)
         window_size = int(p['window_size'] or 20)
@@ -163,13 +164,13 @@ class FullTextSearch(BaseOperator):
 
             # current window is now represented by [be_i, en_i] range of tokens from original text 't'
             # and total_s is its relevance score
-            res_score = -total_s * (float(en_i - be_i + 1) / window_size)
-            # print(f"PUSH: {res_score}, text: {self.token_range_to_string((be_i, en_i), t)}")
-            heapq.heappush(results, (
-                res_score,
-                (be_i, en_i)
-            )
-            )
+            if total_s > 0:  # Only add windows that have a non-zero score
+                res_score = -total_s * (float(en_i - be_i + 1) / window_size)
+                # print(f"PUSH: {res_score}, text: {self.token_range_to_string((be_i, en_i), t)}")
+                heapq.heappush(results, (
+                    res_score,
+                    (be_i, en_i)
+                ))
 
         # List of windows to be used to form output, each is a tuple (begin_token_index, end_token_index)
         res_w = []
@@ -208,3 +209,7 @@ class FullTextSearch(BaseOperator):
 
     def token_is_word(self, token):
         return not token.is_punct and not token.is_space and not token.is_stop
+    
+    def prepare_text_for_search(self, text):
+        """Replaces commas in the text with spaces to make it suitable for search."""
+        return text.replace(',', ' ')
