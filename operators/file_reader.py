@@ -94,14 +94,11 @@ class FileReader(BaseOperator):
         if file_name.lower().endswith('.pdf'):
             return self.read_pdf(file_data)
         elif file_name.lower().endswith('.json'):
-            data = json.loads(file_data.decode())
-            json_str = json.dumps(data, indent=4)
-            return json_str
+            return self.read_json(file_data)
         elif file_name.lower().endswith('.csv'):
-            text_data = file_data.decode('utf-8')
-            reader = csv.reader(text_data.splitlines())
-            data = [cell for row in reader for cell in row]
-            return ','.join(data)
+            return self.read_csv(file_data)
+        elif file_name.lower().endswith('.txt'):
+            return self.read_txt(file_data)
         else:
             raise ValueError(f"Unsupported file format: {file_name}")
 
@@ -121,3 +118,18 @@ class FileReader(BaseOperator):
 
         pdf_content = "\n".join(df.to_string(index=False) for df in df_list)
         return pdf_content
+    
+    def read_txt(self, txt_data):
+        return txt_data.decode('utf-8')
+    
+    def read_csv(self, csv_data):
+        """Method to read the contents of a .csv file"""
+        text_data = csv_data.decode('utf-8')
+        reader = csv.reader(text_data.splitlines())
+        data = [cell for row in reader for cell in row]
+        return ','.join(data)
+    
+    def read_json(self, json_data):
+        data = json.loads(json_data.decode())
+        json_str = json.dumps(data, indent=4)
+        return json_str
