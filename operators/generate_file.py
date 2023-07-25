@@ -43,7 +43,7 @@ class GenerateFile(BaseOperator):
             },
             {
                 "name": "file_type",
-                "data_type": "enum(.pdf,.docx)",
+                "data_type": "enum(.pdf,.docx,.txt)",
                 "description": "The type of the file to generate"
             }
         ]
@@ -84,6 +84,8 @@ class GenerateFile(BaseOperator):
                 file_data = self.get_pdf_bytestream(file_contents)
             elif ".docx" in file_type:
                 file_data = self.get_docx_bytestream(file_contents)
+            elif ".txt" in file_type:
+                file_data = self.get_txt_bytestream(file_contents)
 
             generated_file_name = ai_context.store_file(file_data, file_name)
 
@@ -130,6 +132,12 @@ class GenerateFile(BaseOperator):
 
         pdf_bytes.seek(0)
         return pdf_bytes
+    
+    def get_txt_bytestream(self, file_contents):
+        txt_bytes = BytesIO()
+        txt_bytes.write(file_contents.encode('utf-8'))
+        txt_bytes.seek(0)
+        return txt_bytes
 
     def get_pdf_lines(self, raw_string):
         # Assuming 8.5" x 11" paper with 1-inch margins
