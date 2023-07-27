@@ -72,6 +72,7 @@ class RowDataSearch(BaseOperator):
         text = ai_context.get_input('text', self)
         text = self.prepare_text_for_search(text)
         query = ai_context.get_input('query', self) or p['query']
+        query = self.prepare_text_for_search(query)
         nresults = int(p.get('nresults') or 5)
         
         query_tokens = [token.text.lower()
