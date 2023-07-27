@@ -3,6 +3,7 @@ from collections import deque
 import heapq
 
 from .base_operator import BaseOperator
+from .util import strip_accents
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -112,4 +113,5 @@ class RowDataSearch(BaseOperator):
     
     def prepare_text_for_search(self, text):
         """Replaces commas in the text with spaces to make it suitable for search."""
+        text = strip_accents(text)
         return text.replace(',', ' ')

@@ -1,3 +1,4 @@
+import unicodedata
 import tiktoken
 import numpy as np
 
@@ -26,6 +27,16 @@ def count_tokens(s: str, model_name: str) -> int:
     encoding = tiktoken.encoding_for_model(model_name)
     num_tokens = len(encoding.encode(s))
     return num_tokens
+
+def strip_accents(text):
+    try:
+        text = unicodedata(text, 'utf-8')
+    except (TypeError, NameError):  # unicode is a default on python 3 
+        pass
+    text = unicodedata.normalize('NFD', text)
+    text = text.encode('ascii', 'ignore')
+    text = text.decode("utf-8")
+    return str(text)
     
 
 # Hybrid search helpers below
