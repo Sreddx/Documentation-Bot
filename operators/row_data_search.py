@@ -70,10 +70,23 @@ class RowDataSearch(BaseOperator):
 
     def run_step(self, step, ai_context):
         p = step['parameters']
+        
         text = ai_context.get_input('text', self)
-        text = self.prepare_text_for_search(text)
+        if text:
+            text = self.prepare_text_for_search(text)
+        else:
+            ai_context.add_to_log("Input 'text' is None.")
+            ai_context.set_output('search_result', '', self)
+            return
+
         query = ai_context.get_input('query', self) or p['query']
-        query = self.prepare_text_for_search(query)
+        if query:
+            query = self.prepare_text_for_search(query)
+        else:
+            ai_context.add_to_log("Query is None.")
+            ai_context.set_output('search_result', '', self)
+            return
+
         nresults = int(p.get('nresults') or 5)
         
         query_tokens = [token.text.lower()
@@ -104,6 +117,7 @@ class RowDataSearch(BaseOperator):
 
         ai_context.add_to_log(f'Search result: {final_output}')
         ai_context.set_output('search_result', final_output, self)
+
 
     def token_match_score(self, t1, t2):
         return 1.0 if str(t1).lower() == str(t2).lower() else 0
