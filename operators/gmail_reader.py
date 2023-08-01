@@ -36,6 +36,11 @@ class GmailReader(BaseOperator):
                 "placeholder": "Enter the password",
             },
             {
+                "name": "label",
+                "data_type": "string",
+                "placeholder": "Enter the Gmail label (default is 'inbox')",
+            },
+            {
                 "name": "mark_as_read",
                 "data_type": "boolean",
                 "placeholder": "Mark email as read (default is False)",
@@ -71,23 +76,43 @@ class GmailReader(BaseOperator):
         password = params.get('password')
         mark_as_read_str = params.get('mark_as_read')
         email_id = ai_context.get_input('email_id', self)
+        label = params.get('label')
 
         mark_as_read = False  # Default to False
         if mark_as_read_str and mark_as_read_str.lower() == 'true':
             mark_as_read = True
 
         email_data, uploaded_file_names = self.read_emails(
-            email, password, mark_as_read, email_id, ai_context)
+            email, password, mark_as_read, email_id, label, ai_context)
         ai_context.set_output('email_data', email_data, self)
         ai_context.set_output('attached_file_names', uploaded_file_names, self)
 
-    def read_emails(self, user: str, password: str, mark_as_read: bool, email_id: str, ai_context):
+    def read_emails(self, user: str, password: str, mark_as_read: bool, email_id: str, label: str, ai_context):
         all_email_data = []
         all_uploaded_files = []
         try:
             mail = imaplib.IMAP4_SSL("imap.gmail.com")
             mail.login(user, password)
-            mail.select("inbox")  # connect to inbox.
+            
+            if label:
+                # Fetch list of all mailbox names
+                result, mailbox_list = mail.list()
+                if result != 'OK':
+                    ai_context.add_to_log(f"Failed to fetch mailbox list.")
+                    return [], []
+
+                # Check if desired label is in the list of mailbox names
+                if not any((f'"{label}"' in mbox.decode()) for mbox in mailbox_list):
+                    ai_context.add_to_log(f"Label {label} does not exist.")
+                    return [], []
+
+                # Now select the mailbox
+                result, _ = mail.select(label)
+                if result != 'OK':
+                    ai_context.add_to_log(f"Failed to select label {label}.")
+                    return [], []
+            else:
+                mail.select("inbox")
 
             if email_id:
                 # Retrieve the specific email using its UID
