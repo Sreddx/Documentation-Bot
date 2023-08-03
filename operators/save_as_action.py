@@ -11,6 +11,10 @@ class SaveAsAction(BaseOperator):
     def declare_category():
         return BaseOperator.OperatorCategory.DB.value
     
+    @staticmethod
+    def declare_allow_batch():
+        return True
+    
     @staticmethod    
     def declare_parameters():
         return []
