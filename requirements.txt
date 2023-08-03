@@ -15,9 +15,11 @@ PyPDF2
 reportlab
 python-docx
 tiktoken
+selenium
 shortuuid
 spacy
 google-api-python-client
 google-cloud-storage
 botocore
 boto3
+brotli
