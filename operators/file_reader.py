@@ -1,6 +1,8 @@
 import io
 import json
 import csv
+import os
+os.environ["JAVA_TOOL_OPTIONS"] = "-Djava.awt.headless=true"
 
 import tabula
 import pandas as pd
