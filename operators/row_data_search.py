@@ -107,7 +107,7 @@ class RowDataSearch(BaseOperator):
                 heapq.heappush(results, (-line_score, line))
 
         if not results:
-            ai_context.add_to_log('No matches found for the given query.')
+            ai_context.add_to_log('No matches found for the given query.', log_level="VERBOSE")
             ai_context.set_output('search_result', '', self)
             return
 
@@ -115,7 +115,7 @@ class RowDataSearch(BaseOperator):
 
         final_output = "\n".join(top_results)
 
-        ai_context.add_to_log(f'Search result: {final_output}')
+        ai_context.add_to_log(f'Search result: {final_output}', log_level="VERBOSE")
         ai_context.set_output('search_result', final_output, self)
 
 

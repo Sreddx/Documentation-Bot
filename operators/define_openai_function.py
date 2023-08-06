@@ -131,5 +131,5 @@ class DefineOpenAiFunction(BaseOperator):
 
         function_json_str = json.dumps(function_json)
 
-        ai_context.add_to_log(f"Your function json: {function_json_str}")
+        ai_context.add_to_log(f"Your function json: {function_json_str}", log_level="VERBOSE")
         ai_context.set_output('function_json', function_json_str, self)

@@ -51,7 +51,7 @@ class EncodeURL(BaseOperator):
         input_string = ai_context.get_input('input', self)
         try:
             encoded_url = quote_plus(input_string)
-            ai_context.add_to_log(f"Successfully encoded URL")
+            ai_context.add_to_log(f"Successfully encoded URL", log_level="VERBOSE")
             ai_context.set_output('encoded_url', encoded_url, self)
 
         except Exception as e:

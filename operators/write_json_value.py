@@ -88,7 +88,7 @@ class WriteJsonValue(BaseOperator):
             updated_json_string = json.dumps(updated_json_object)
 
             ai_context.add_to_log(
-                f"Updated JSON string: {updated_json_string}")
+                f"Updated JSON string: {updated_json_string}", log_level="VERBOSE")
             ai_context.set_output('updated_json_string',
                                   updated_json_string, self)
 

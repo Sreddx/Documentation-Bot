@@ -74,7 +74,7 @@ class FileReader(BaseOperator):
     def ingest(self, uploaded_file_name, ai_context):
         if uploaded_file_name:
             ai_context.add_to_log(
-                f"Loading {uploaded_file_name} from storage.")
+                f"Loading {uploaded_file_name} from storage.", log_level="VERBOSE")
 
             file_data = self.load_file_from_storage(
                 uploaded_file_name, ai_context)

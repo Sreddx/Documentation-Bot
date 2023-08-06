@@ -74,7 +74,7 @@ class HybridSearch(BaseOperator):
             ai_context.get_model_name()
         )
         ai_context.add_to_log(
-            "{} embeddings were fit into the prompt".format(len(selected_chunks)))
+            "{} embeddings were fit into the prompt".format(len(selected_chunks)), log_level="VERBOSE")
 
         selected_chunks_str = str(selected_chunks)
         prompt += f" context: {selected_chunks_str}"

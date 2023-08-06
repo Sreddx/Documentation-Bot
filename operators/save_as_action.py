@@ -46,5 +46,5 @@ class SaveAsAction(BaseOperator):
         run_id = ai_context.get_run_id()
         
         action_id = ai_context.save_as_action(run_id, text)
-        ai_context.add_to_log("Saved {} as action {}".format(text, action_id))
+        ai_context.add_to_log("Saved {} as action {}".format(text, action_id), log_level="VERBOSE")
         ai_context.set_output('id', action_id, self)

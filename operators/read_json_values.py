@@ -98,7 +98,7 @@ class ReadJsonValues(BaseOperator):
 
             json_values = ', '.join(values)
 
-            ai_context.add_to_log(f"Json values read: {json_values}")
+            ai_context.add_to_log(f"Json values read: {json_values}", log_level="VERBOSE")
             ai_context.set_output('json_values', json_values, self)
 
         except Exception as e:

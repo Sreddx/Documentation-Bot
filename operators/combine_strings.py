@@ -67,7 +67,7 @@ class CombineStrings(BaseOperator):
         try:
             combined_string = format_string.format(
                 input1=input1, input2=input2)
-            ai_context.add_to_log(f"Successfully combined strings")
+            ai_context.add_to_log(f"Successfully combined strings", log_level="VERBOSE")
             ai_context.set_output('combined_string', combined_string, self)
 
         except Exception as e:
