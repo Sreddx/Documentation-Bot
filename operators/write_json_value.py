@@ -59,14 +59,30 @@ class WriteJsonValue(BaseOperator):
             }
         ]
 
+    def parse_json_value(self, json_value):
+        # If the passed value is a string, attempt to parse it as JSON
+        if isinstance(json_value, str):
+            try:
+                parsed_value = json.loads(json_value)
+                return self.parse_json_value(parsed_value)  # Recurse with the parsed value
+            except Exception as e:
+                return json_value  # If parsing fails, return the original string
+
+        # If the passed value is a list, recurse into its elements
+        elif isinstance(json_value, list):
+            return [self.parse_json_value(item) for item in json_value]
+
+        # If the passed value is a dictionary, recurse into its values
+        elif isinstance(json_value, dict):
+            return {key: self.parse_json_value(val) for key, val in json_value.items()}
+
+        # For any other type, return the value as is
+        else:
+            return json_value
+
     def add_or_update_key(self, json_object, key, json_value):
-        try:
-            value = json.loads(json_value)
-        except Exception as e:
-            value = json_value
-
+        value = self.parse_json_value(json_value)
         json_object[key] = value
-
         return json_object
 
     def run_step(
@@ -82,7 +98,7 @@ class WriteJsonValue(BaseOperator):
 
         try:
             json_object = json.loads(json_string)
-
+            
             updated_json_object = self.add_or_update_key(
                 json_object, key, json_value)
             updated_json_string = json.dumps(updated_json_object)
