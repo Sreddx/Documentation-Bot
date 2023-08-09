@@ -15,15 +15,15 @@ class FindAndReplace(BaseOperator):
     @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.MANIPULATE_DATA.value
-    
+
     @staticmethod
     def declare_icon():
         return "switch.png"
-    
+
     @staticmethod
     def declare_allow_batch():
         return True
-    
+
     @staticmethod
     def declare_inputs():
         return [
@@ -67,11 +67,11 @@ class FindAndReplace(BaseOperator):
         input_string = ai_context.get_input('input', self)
         replacements = step['parameters'].get('replacements')
 
-        # Convert the input string to lowercase and remove commas and periods
-        input_string = input_string.lower().replace(',', '').replace('.', '')
+        # Convert the input string to lowercase and remove commas and periods for search
+        search_input_string = input_string.lower().replace(',', '').replace('.', '')
 
         # Split the input string into words
-        words = input_string.split()
+        words = search_input_string.split()
 
         # Using the parameter structure provided
         replacements_dict = parse_parameter_structures(replacements)
@@ -79,15 +79,21 @@ class FindAndReplace(BaseOperator):
         # Iterate over each replacement object and replace words in the list
         for replacement in replacements_dict.values():
             find_word = replacement['find_word'].lower()
-            replace_with = replacement['replace_with'].lower()
+            replace_with = replacement['replace_with']
 
             # Replace the word in the list of words
-            words = [replace_with if word == find_word else word for word in words]
+            words = [replace_with if word ==
+                     find_word else word for word in words]
+
+        # Put words back into proper case after find & replace
+        proper_case_words = input_string.replace(
+            ',', '').replace('.', '').split()
+        for i, word in enumerate(proper_case_words):
+            if word.lower() == words[i]:
+                words[i] = word
 
         # Join the words back into a string
         output_string = ' '.join(words)
 
         ai_context.add_to_log(f"String from find and replace: {output_string}")
         ai_context.set_output('output_string', output_string, self)
-        
-

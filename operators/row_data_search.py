@@ -89,8 +89,8 @@ class RowDataSearch(BaseOperator):
 
         nresults = int(p.get('nresults') or 5)
 
-        query_tokens = [token.text for token in nlp(
-            query) if self.token_is_word(token)]
+        query_tokens = [token.text.lower() for token in nlp(
+            query.lower()) if self.token_is_word(token)]
 
         lines = text.split('\n')
 
@@ -131,6 +131,5 @@ class RowDataSearch(BaseOperator):
         """Replaces commas in the text with spaces to make it suitable for search."""
         text = strip_accents(text)
         text = text.replace(',', ' ')
-        text = text.lower()
 
         return text
