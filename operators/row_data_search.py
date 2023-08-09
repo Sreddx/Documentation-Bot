@@ -70,7 +70,7 @@ class RowDataSearch(BaseOperator):
 
     def run_step(self, step, ai_context):
         p = step['parameters']
-        
+
         text = ai_context.get_input('text', self)
         if text:
             text = self.prepare_text_for_search(text)
@@ -88,9 +88,9 @@ class RowDataSearch(BaseOperator):
             return
 
         nresults = int(p.get('nresults') or 5)
-        
-        query_tokens = [token.text.lower()
-                        for token in nlp(query) if self.token_is_word(token)]
+
+        query_tokens = [token.text for token in nlp(
+            query) if self.token_is_word(token)]
 
         lines = text.split('\n')
 
@@ -102,30 +102,35 @@ class RowDataSearch(BaseOperator):
             for token in t:
                 for query_token in query_tokens:
                     line_score += self.token_match_score(query_token, token)
-            
+
             if line_score > 0:  # Ensure non-zero score before adding to the results
                 heapq.heappush(results, (-line_score, line))
 
         if not results:
-            ai_context.add_to_log('No matches found for the given query.', log_level="VERBOSE")
+            ai_context.add_to_log(
+                'No matches found for the given query.', log_level="VERBOSE")
             ai_context.set_output('search_result', '', self)
             return
 
-        top_results = [heapq.heappop(results)[1] for _ in range(min(nresults, len(results)))]
+        top_results = [heapq.heappop(results)[1]
+                       for _ in range(min(nresults, len(results)))]
 
         final_output = "\n".join(top_results)
 
-        ai_context.add_to_log(f'Search result: {final_output}', log_level="VERBOSE")
+        ai_context.add_to_log(
+            f'Search result: {final_output}', log_level="VERBOSE")
         ai_context.set_output('search_result', final_output, self)
-
 
     def token_match_score(self, t1, t2):
         return 1.0 if str(t1).lower() == str(t2).lower() else 0
 
     def token_is_word(self, token):
         return not token.is_punct and not token.is_space and not token.is_stop
-    
+
     def prepare_text_for_search(self, text):
         """Replaces commas in the text with spaces to make it suitable for search."""
         text = strip_accents(text)
-        return text.replace(',', ' ')
+        text = text.replace(',', ' ')
+        text = text.lower()
+
+        return text
