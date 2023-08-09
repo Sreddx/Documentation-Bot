@@ -1,5 +1,7 @@
 import json
 
+from operators.util import parse_parameter_structures
+
 from .base_operator import BaseOperator
 from ai_context import AiContext
 
@@ -74,30 +76,10 @@ class DefineOpenAiFunction(BaseOperator):
 
         # Separate individual parameters attributes (segment into 2D array, where each array contains name, type, description)
         # TODO: move this to the platform side to simplify making new operators with object[] parameters
-        parameters_dict = self.parse_parameter_structures(parameter_structures)
+        parameters_dict = parse_parameter_structures(parameter_structures)
         # Use the segmented array of parameters to build the function JSON
         self.build_openai_function_json(
             function_name, description, parameters_dict, ai_context)
-
-    def parse_parameter_structures(self, parameter_structures):
-        parameters_dict = {}
-
-        for parameter in parameter_structures:
-            # Each item is a dictionary with one entry, iterate over this entry
-            for attribute, value in parameter.items():
-                # Split the key by the "-" character
-                # This separates the attribute name (name, type, or description) and the parameter index
-                indexed_attribute = attribute.split("-")
-                param_index = indexed_attribute[1]
-                param_attribute = indexed_attribute[0]
-
-                if param_index not in parameters_dict:
-                    parameters_dict[param_index] = {}
-
-                # Add the attribute to the dictionary for this parameter index
-                parameters_dict[param_index][param_attribute] = value
-
-        return parameters_dict
 
     def build_openai_function_json(self, function_name, description, parameters_dict, ai_context):
         # Properties dictionary is what holds the actual parameter information

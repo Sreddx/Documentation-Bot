@@ -67,3 +67,23 @@ def select_most_relevant_chunks(sorted_chunks, token_budget, model_name):
     
     return selected_chunks
 
+def parse_parameter_structures(parameter_structures):
+    parameters_dict = {}
+
+    for parameter in parameter_structures:
+        # Each item is a dictionary with one entry, iterate over this entry
+        for attribute, value in parameter.items():
+            # Split the key by the "-" character
+            # This separates the attribute name (name, type, or description) and the parameter index
+            indexed_attribute = attribute.split("-")
+            param_index = indexed_attribute[1]
+            param_attribute = indexed_attribute[0]
+
+            if param_index not in parameters_dict:
+                parameters_dict[param_index] = {}
+
+            # Add the attribute to the dictionary for this parameter index
+            parameters_dict[param_index][param_attribute] = value
+
+    return parameters_dict
+
