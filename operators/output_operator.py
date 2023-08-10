@@ -56,5 +56,5 @@ class OutputOperator(BaseOperator):
         return []
 
     def run_step(self, step, ai_context):
-        # Does nothing, agenthub.dev platform is implementing special treatment for Input and Output operators.
-        pass
+        output = ai_context.get_input('output', self)
+        ai_context.add_to_log(f"Output: {str(output)}")
