@@ -52,6 +52,31 @@ class GitHubFileReader(BaseOperator):
         return []
 
     @staticmethod
+    def declare_inputs():
+        return [
+            {
+                "name": "repo_name",
+                "data_type": "string",
+                "optional": "1"
+            },
+            {
+                "name": "folders",
+                "data_type": "string",
+                "optional": "1"
+            },
+            {
+                "name": "file_regex",
+                "data_type": "string",
+                "optional": "1"
+            },
+            {
+                "name": "branch",
+                "data_type": "string",
+                "optional": "1"
+            }
+        ]
+
+    @staticmethod
     def declare_outputs():
         return [
             {
@@ -64,20 +89,20 @@ class GitHubFileReader(BaseOperator):
             }
         ]
 
-    def run_step(
-        self,
-        step,
-        ai_context: AiContext
-    ):
+    def run_step(self, step, ai_context: AiContext):
         params = step['parameters']
-        self.read_github_files(params, ai_context)
+        
+        # Fetch parameters or inputs as necessary
+        repo_name = params.get('repo_name') or ai_context.get_input('repo_name', self)
+        folders = params.get('folders') or ai_context.get_input('folders', self)
+        file_regex = params.get('file_regex') or ai_context.get_input('file_regex', self)
+        branch = params.get('branch', 'master') or ai_context.get_input('branch', self)
 
-    def read_github_files(self, params, ai_context):
-        repo_name = params['repo_name']
-        folders = params.get('folders').replace(" ", "").split(',')
-        file_regex = params.get('file_regex')
-        branch = params.get('branch', 'master')
+        folders = folders.replace(" ", "").split(',')
 
+        self.read_github_files(repo_name, folders, file_regex, branch, ai_context)
+
+    def read_github_files(self, repo_name, folders, file_regex, branch, ai_context):
         g = Github(ai_context.get_secret('github_access_token'))
         repo = g.get_repo(repo_name)
 
@@ -116,3 +141,4 @@ class GitHubFileReader(BaseOperator):
         ai_context.set_output('file_names', file_names, self)
         ai_context.set_output('file_contents', file_contents, self)
         return True
+    
