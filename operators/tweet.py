@@ -21,12 +21,17 @@ class Tweet(BaseOperator):
         return "twitter.png"
 
     @staticmethod
+    def declare_description():
+        return "This operator allows you to send a tweet on Twitter."
+
+    @staticmethod
     def declare_parameters():
         return [
             {
                 "name": "remove_hashtags",
                 "data_type": "boolean",
                 "placeholder": "Remove all trailing hashtags (default is False)",
+                "description": "Choose whether to remove all trailing hashtags from the tweet text."
             }
         ]
 
@@ -36,7 +41,8 @@ class Tweet(BaseOperator):
             {
                 "name": "tweet_text",
                 "data_type": "string",
-                "placeholder": "Enter the text to tweet"
+                "placeholder": "Enter the text to tweet",
+                "description": "Enter the text that you want to post as a tweet."
             }
         ]
 
@@ -46,6 +52,7 @@ class Tweet(BaseOperator):
             {
                 "name": "tweet_status",
                 "data_type": "string",
+                "description": "The status of the tweet posting. Returns the tweet URL if successful, or an error message if not."
             }
         ]
 
