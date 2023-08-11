@@ -28,6 +28,11 @@ class GmailSender(BaseOperator):
                 "placeholder": "Enter the recipient's email address"
             },
             {
+                "name": "email_subject",
+                "data_type": "string",
+                "placeholder": "Enter the subject of the email"
+            },
+            {
                 "name": "send_as_html",
                 "data_type": "boolean",
                 "placeholder": "Send email as HTML (default is False)",
@@ -40,6 +45,12 @@ class GmailSender(BaseOperator):
             {
                 "name": "email_body",
                 "data_type": "string",
+            },
+            {
+                "name": "email_subject",
+                "data_type": "string",
+                "placeholder": "Enter the subject of the email",
+                "optional": "1"
             }
         ]
 
@@ -64,7 +75,8 @@ class GmailSender(BaseOperator):
         if send_as_html_str and send_as_html_str.lower() == 'true':
             send_as_html = True
 
-        email_subject = "AgentHub Run Notification"
+        email_subject = params.get(
+            'email_subject') or ai_context.get_input('email_subject', self) or "AgentHub Run Notification"
         email_body = ai_context.get_input('email_body', self)
         sender = ai_context.get_secret('gmail_sender')
         password = ai_context.get_secret('gmail_password')

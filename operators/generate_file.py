@@ -52,6 +52,12 @@ class GenerateFile(BaseOperator):
     def declare_inputs():
         return [
             {
+                "name": "file_name",
+                "data_type": "string",
+                "placeholder": "Ex. The name of the file, no need to specify the extension here.",
+                "optional": "1"
+            },
+            {
                 "name": "file_contents",
                 "data_type": "string",
                 "placeholder": "Ex. The text of a letter that should be in a PDF",
@@ -73,7 +79,8 @@ class GenerateFile(BaseOperator):
 
         file_contents = ai_context.get_input('file_contents', self)
 
-        file_name = params.get("file_name")
+        file_name = params.get(
+            "file_name") or ai_context.get_input('file_name', self)
         file_type = params.get("file_type")
 
         file_name = file_name + file_type.strip()
@@ -132,7 +139,7 @@ class GenerateFile(BaseOperator):
 
         pdf_bytes.seek(0)
         return pdf_bytes
-    
+
     def get_txt_bytestream(self, file_contents):
         txt_bytes = BytesIO()
         txt_bytes.write(file_contents.encode('utf-8'))
