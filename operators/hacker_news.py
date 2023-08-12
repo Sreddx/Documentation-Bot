@@ -12,6 +12,10 @@ class ScrapeHackerNews(BaseOperator):
         return 'Scrape Hacker News'
 
     @staticmethod
+    def declare_description():
+        return 'This operator scrapes news articles from Hacker News and filters them based on keywords.'
+
+    @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.CONSUME_DATA.value
 
@@ -25,12 +29,14 @@ class ScrapeHackerNews(BaseOperator):
             {
                 "name": "keywords",
                 "data_type": "json",
-                "placeholder": "Enter keywords to filter news (optional)"
+                "placeholder": "Enter keywords to filter news (optional)",
+                "description": "Enter a list of keywords to filter the news articles. Only articles that contain any of the provided keywords in their titles will be included."
             },
             {
                 "name": "num_pages",
                 "data_type": "integer",
-                "placeholder": "Enter the number of pages to scrape (max 5 pages)"
+                "placeholder": "Enter the number of pages to scrape (max 5 pages)",
+                "description": "Enter the number of pages of Hacker News to scrape. The maximum number of pages that can be scraped is 5."
             }
         ]
 
@@ -44,6 +50,7 @@ class ScrapeHackerNews(BaseOperator):
             {
                 "name": "title_link_dict",
                 "data_type": "json",
+                "description": "A dictionary containing the titles of the scraped articles as keys and their corresponding links as values."
             }
         ]
 
