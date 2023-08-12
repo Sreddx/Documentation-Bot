@@ -15,6 +15,10 @@ class OutlookReader(BaseOperator):
         return 'OutlookReader'
 
     @staticmethod
+    def declare_description():
+        return 'This operator reads emails from a specified Outlook account and retrieves email data and attached file names.'
+
+    @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.CONSUME_DATA.value
 
@@ -29,21 +33,25 @@ class OutlookReader(BaseOperator):
                 "name": "email",
                 "data_type": "string",
                 "placeholder": "Enter the email address",
+                "description": "The email address for the Outlook account."
             },
             {
                 "name": "password",
                 "data_type": "string",
                 "placeholder": "Enter the password",
+                "description": "The password for the Outlook account."
             },
             {
                 "name": "folder",
                 "data_type": "string",
                 "placeholder": "Enter the Outlook folder (default is 'inbox')",
+                "description": "The folder in Outlook to read emails from. If not specified, the 'inbox' folder will be used."
             },
             {
                 "name": "mark_as_read",
                 "data_type": "boolean",
                 "placeholder": "Mark email as read (default is False)",
+                "description": "A boolean flag indicating whether to mark the read emails as read. By default, it is set to False."
             }
         ]
 
@@ -53,7 +61,8 @@ class OutlookReader(BaseOperator):
             {
                 "name": "email_id",
                 "data_type": "string",
-                "optional": "1"
+                "optional": "1",
+                "description": "The ID of the specific email to retrieve. If not provided, it will retrieve all unread emails."
             }
         ]
 
@@ -63,10 +72,12 @@ class OutlookReader(BaseOperator):
             {
                 "name": "email_data",
                 "data_type": "string[]",
+                "description": "A list of email data in string format."
             },
             {
                 "name": "attached_file_names",
                 "data_type": "string[]",
+                "description": "A list of attached file names."
             }
         ]
 
