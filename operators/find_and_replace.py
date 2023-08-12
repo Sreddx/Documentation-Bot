@@ -1,16 +1,16 @@
 import json
-
 from operators.util import parse_parameter_structures
-
 from .base_operator import BaseOperator
 from ai_context import AiContext
 
-
 class FindAndReplace(BaseOperator):
-
     @staticmethod
     def declare_name():
         return 'Find And Replace'
+
+    @staticmethod
+    def declare_description():
+        return 'This operator finds and replaces words in an input string.'
 
     @staticmethod
     def declare_category():
@@ -25,32 +25,36 @@ class FindAndReplace(BaseOperator):
         return True
 
     @staticmethod
-    def declare_inputs():
-        return [
-            {
-                "name": "input",
-                "data_type": "string",
-            }
-        ]
-
-    @staticmethod
     def declare_parameters():
         return [
             {
                 "name": "replacements",
                 "data_type": "object[]",
+                "description": "An array of objects specifying the words to find and their replacements.",
                 "structure": [
                     {
                         "name": "find_word",
                         "data_type": "string",
-                        "placeholder": "Word to find"
+                        "placeholder": "Word to find",
+                        "description": "The word to find in the input string."
                     },
                     {
                         "name": "replace_with",
                         "data_type": "string",
-                        "placeholder": "Word to replace it with"
+                        "placeholder": "Word to replace it with",
+                        "description": "The word to replace the found word with."
                     }
                 ]
+            }
+        ]
+
+    @staticmethod
+    def declare_inputs():
+        return [
+            {
+                "name": "input",
+                "data_type": "string",
+                "description": "The input string to perform the find and replace operation on."
             }
         ]
 
@@ -60,6 +64,7 @@ class FindAndReplace(BaseOperator):
             {
                 "name": "output_string",
                 "data_type": "string",
+                "description": "The output string after performing the find and replace operation."
             }
         ]
 
