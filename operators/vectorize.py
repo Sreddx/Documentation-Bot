@@ -31,10 +31,12 @@ class VectorizeOperator(BaseOperator):
             {
                 "name": "element",
                 "data_type": "any",
+                "description": "The element to be repeated in the resulting vector",
             },
             {
                 "name": "vector",
                 "data_type": "any",
+                "description": "The vector to determine the size of the output vector",
             }
         ]
 
@@ -44,6 +46,7 @@ class VectorizeOperator(BaseOperator):
             {
                 "name": "vector_of_elements",
                 "data_type": "any",
+                "description": "A list of size len(vector) where each element is 'element'",
             }
         ]
 
