@@ -27,7 +27,8 @@ class WriteJsonValue(BaseOperator):
             {
                 "name": "key",
                 "data_type": "string",
-                "placeholder": "Ex: 'name'"
+                "placeholder": "Ex: 'name'",
+                "description": "The key in the JSON object where the value will be added or updated"
             }
         ]
 
@@ -46,7 +47,7 @@ class WriteJsonValue(BaseOperator):
             {
                 "name": "json_value",
                 "data_type": "any",
-                "description": "This can a string representing a json object, a json array, or a string"
+                "description": "This can be a string representing a JSON object, a JSON array, or a string"
             }
         ]
 
@@ -56,6 +57,7 @@ class WriteJsonValue(BaseOperator):
             {
                 "name": "updated_json_string",
                 "data_type": "string",
+                "description": "The updated stringified JSON"
             }
         ]
 
