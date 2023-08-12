@@ -21,7 +21,7 @@ class WebsiteScraper(BaseOperator):
 
     @staticmethod
     def declare_description():
-        return "Scrapes the content of a website from the URL. Note: Javascript generated text is not yet supported."
+        return "Scrapes the content of a website from the provided URL. Note: Javascript generated text is not yet supported."
 
     @staticmethod
     def declare_icon():
@@ -38,7 +38,7 @@ class WebsiteScraper(BaseOperator):
                 "name": "url",
                 "data_type": "string",
                 "placeholder": "Ex. https://www.agenthub.dev/",
-                "description": "Enter the URL to scrape the content from. Note: Javascript generated text is not yet supported."
+                "description": "Enter the URL from which you want to scrape the content. Note: Javascript generated text is not yet supported."
             }
         ]
 
@@ -58,6 +58,7 @@ class WebsiteScraper(BaseOperator):
             {
                 "name": "website_content",
                 "data_type": "string",
+                "description": "The scraped content of the website."
             }
         ]
 
@@ -69,7 +70,7 @@ class WebsiteScraper(BaseOperator):
         self.ingest(url, ai_context)
 
     def ingest(self, url, ai_context):
-        # TODO: Add Selenium for support of scraping Javascript website
+        # TODO: Add Selenium for support of scraping Javascript websites
         if url and self.is_url(url):
             if url.lower().endswith(".pdf"):
                 file_data = self.load_pdf_from_url(url)
