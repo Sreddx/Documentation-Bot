@@ -11,6 +11,10 @@ class CastType(BaseOperator):
         return 'Cast Type'
 
     @staticmethod
+    def declare_description():
+        return 'This operator is used to cast the input data to a specified output type.'
+
+    @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.MANIPULATE_DATA.value
 
@@ -24,12 +28,13 @@ class CastType(BaseOperator):
             {
                 "name": "output_type",
                 "data_type": "enum(string,string[])",
-                "placeholder": "Output type to cast to."
+                "placeholder": "Output type to cast to.",
+                "description": "The type to cast the input data to."
             },
             {
                 "name": "is_comma_separated",
                 "data_type": "boolean",
-                "description": "Do you want to split the input string by commas?",
+                "description": "Specify whether to split the input string by commas.",
                 "condition": "output_type == string[]"
             }
         ]
@@ -40,6 +45,7 @@ class CastType(BaseOperator):
             {
                 "name": "input",
                 "data_type": "any",
+                "description": "The input data to be casted."
             }
         ]
 
@@ -49,6 +55,7 @@ class CastType(BaseOperator):
             {
                 "name": "output",
                 "data_type": "any",
+                "description": "The casted output data."
             }
         ]
 
