@@ -22,17 +22,23 @@ class WebSearch(BaseOperator):
         return "web_search.png"
 
     @staticmethod
+    def declare_description():
+        return 'This operator performs a web search using Google Custom Search API.'
+
+    @staticmethod
     def declare_parameters():
         return [
             {
                 "name": "query",
                 "data_type": "string",
-                "placeholder": "Enter your search query"
+                "placeholder": "Enter your search query",
+                "description": "The search query to be used"
             },
             {
                 "name": "results_count",
                 "data_type": "integer",
-                "placeholder": "Enter the number of results (default 5)"
+                "placeholder": "Enter the number of results (default 5)",
+                "description": "Number of search results to retrieve"
             }
         ]
 
@@ -46,10 +52,12 @@ class WebSearch(BaseOperator):
             {
                 "name": "urls",
                 "data_type": "string[]",
+                "description": "The URLs of the search results"
             },
             {
                 "name": "snippets",
-                "data_type": "string[]"
+                "data_type": "string[]",
+                "description": "Brief descriptions of the search results"
             }
         ]
 
