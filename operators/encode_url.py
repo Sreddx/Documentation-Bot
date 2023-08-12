@@ -9,6 +9,10 @@ class EncodeURL(BaseOperator):
         return 'EncodeURL'
 
     @staticmethod
+    def declare_description():
+        return 'This operator encodes a given URL string.'
+
+    @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.MANIPULATE_DATA.value
 
@@ -30,7 +34,7 @@ class EncodeURL(BaseOperator):
             {
                 "name": "input",
                 "data_type": "string",
-                "placeholder": "Enter the input string to encode"
+                "description": "Enter the input string to encode"
             }
         ]
 
@@ -40,6 +44,7 @@ class EncodeURL(BaseOperator):
             {
                 "name": "encoded_url",
                 "data_type": "string",
+                "description": "The encoded URL"
             }
         ]
 
