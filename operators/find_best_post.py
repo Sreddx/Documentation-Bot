@@ -9,6 +9,10 @@ class FindBestPost(BaseOperator):
         return 'Find Best Post'
 
     @staticmethod
+    def declare_description():
+        return 'This operator finds the best post that closely reflects a given query.'
+
+    @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.AI.value
 
@@ -22,7 +26,8 @@ class FindBestPost(BaseOperator):
             {
                 "name": "query",
                 "data_type": "string",
-                "placeholder": "Enter your query"
+                "placeholder": "Enter your query",
+                "description": "The query to find the best post"
             }
         ]
 
@@ -32,6 +37,7 @@ class FindBestPost(BaseOperator):
             {
                 "name": "title_link_dict",
                 "data_type": "json",
+                "description": "A dictionary mapping post titles to their respective links"
             }
         ]
 
@@ -41,6 +47,7 @@ class FindBestPost(BaseOperator):
             {
                 "name": "best_post_link",
                 "data_type": "string",
+                "description": "The link of the best post that closely reflects the query"
             }
         ]
 
