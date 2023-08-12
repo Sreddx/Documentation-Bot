@@ -46,7 +46,8 @@ class TriggerPipeline(BaseOperator):
             {
                 "name": "pipeline_input",
                 "data_type": "string",
-                "optional": "1"
+                "optional": "1",
+                "description": "The input for the pipeline being triggered"
             }
         ]
 
@@ -56,6 +57,7 @@ class TriggerPipeline(BaseOperator):
             {
                 "name": "output",
                 "data_type": "string",
+                "description": "The output of the triggered pipeline"
             }
         ]
 
