@@ -29,7 +29,7 @@ class InputOperator(BaseOperator):
             {
                 "name": "value",
                 "data_type": "string",
-                "description": "string value you would like this operator instance to output"
+                "description": "The string value you would like this operator instance to output"
             },
             {
                 "name": "input_name",
@@ -39,7 +39,7 @@ class InputOperator(BaseOperator):
             {
                 "name": "show_as_user_input",
                 "data_type": "boolean",
-                "description": "Do you want to prompt the end user to fill this field.",
+                "description": "Do you want to prompt the end user to fill this field?",
             },
             {
                 "name": "input_type",
@@ -55,7 +55,7 @@ class InputOperator(BaseOperator):
             {
                 "name": "log_visibility",
                 "data_type": "enum(user,project)",
-                "description": "When storing the history of inputs for this saved pipeline what level of granularity should the log be stored at.",
+                "description": "When storing the history of inputs for this saved pipeline, what level of granularity should the log be stored at?",
                 "condition": "store_log == true"
             }
         ]
@@ -70,6 +70,7 @@ class InputOperator(BaseOperator):
             {
                 "name": "output",
                 "data_type": "string",
+                "description": "The output string value of this operator instance."
             }
         ]
 
