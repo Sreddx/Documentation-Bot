@@ -8,6 +8,10 @@ class CombineStrings(BaseOperator):
         return 'CombineStrings'
 
     @staticmethod
+    def declare_description():
+        return 'This operator combines two input strings using a given format.'
+
+    @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.MANIPULATE_DATA.value
 
@@ -21,7 +25,8 @@ class CombineStrings(BaseOperator):
             {
                 "name": "format",
                 "data_type": "string",
-                "placeholder": "Ex: 'This is input 1: {input1} This is input 2: {input2}'"
+                "placeholder": "Ex: 'This is input 1: {input1} This is input 2: {input2}'",
+                "description": "The format string to combine the input strings. Use {input1} and {input2} as placeholders."
             }
         ]
 
@@ -36,13 +41,15 @@ class CombineStrings(BaseOperator):
                 "name": "input1",
                 "data_type": "string",
                 "placeholder": "Enter the first input string",
-                "optional": "1"
+                "optional": "1",
+                "description": "The first input string to be combined."
             },
             {
                 "name": "input2",
                 "data_type": "string",
                 "placeholder": "Enter the second input string",
-                "optional": "1"
+                "optional": "1",
+                "description": "The second input string to be combined."
             }
         ]
 
@@ -52,6 +59,7 @@ class CombineStrings(BaseOperator):
             {
                 "name": "combined_string",
                 "data_type": "string",
+                "description": "The combined string of input1 and input2, formatted according to the specified format string."
             }
         ]
 
