@@ -1,5 +1,4 @@
 import json
-
 from .base_operator import BaseOperator
 from ai_context import AiContext
 
@@ -8,6 +7,10 @@ class ReadJsonValues(BaseOperator):
     @staticmethod
     def declare_name():
         return 'ReadJsonValues'
+    
+    @staticmethod
+    def declare_description():
+        return 'This operator reads values from a JSON object based on provided keys.'
 
     @staticmethod
     def declare_category():
@@ -23,7 +26,8 @@ class ReadJsonValues(BaseOperator):
             {
                 "name": "keys",
                 "data_type": "string",
-                "placeholder": "Ex: 'key1,key2,key3'"
+                "placeholder": "Ex: 'key1,key2,key3'",
+                "description": "Comma-separated list of keys to retrieve values from the JSON object."
             }
         ]
 
@@ -37,7 +41,8 @@ class ReadJsonValues(BaseOperator):
             {
                 "name": "json_string",
                 "data_type": "string",
-                "placeholder": "Enter the JSON string"
+                "placeholder": "Enter the JSON string",
+                "description": "The JSON string to retrieve values from."
             }
         ]
 
@@ -47,6 +52,7 @@ class ReadJsonValues(BaseOperator):
             {
                 "name": "json_values",
                 "data_type": "string",
+                "description": "The retrieved JSON values.",
             }
         ]
 
