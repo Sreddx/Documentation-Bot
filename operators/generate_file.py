@@ -17,12 +17,12 @@ class GenerateFile(BaseOperator):
         return 'Generate File'
 
     @staticmethod
-    def declare_category():
-        return BaseOperator.OperatorCategory.MANIPULATE_DATA.value
-
-    @staticmethod
     def declare_description():
         return "Writes the content to a file given a string and returns a download link to the file. Supports .pdf and .docx filetypes"
+
+    @staticmethod
+    def declare_category():
+        return BaseOperator.OperatorCategory.MANIPULATE_DATA.value
 
     @staticmethod
     def declare_icon():
@@ -55,13 +55,15 @@ class GenerateFile(BaseOperator):
                 "name": "file_name",
                 "data_type": "string",
                 "placeholder": "Ex. The name of the file, no need to specify the extension here.",
-                "optional": "1"
+                "optional": "1",
+                "description": "The name of the file, no need to specify the extension here."
             },
             {
                 "name": "file_contents",
                 "data_type": "string",
                 "placeholder": "Ex. The text of a letter that should be in a PDF",
-                "optional": "1"
+                "optional": "1",
+                "description": "The contents of the file"
             }
         ]
 
@@ -71,6 +73,7 @@ class GenerateFile(BaseOperator):
             {
                 "name": "generated_file_name",
                 "data_type": "string",
+                "description": "The name of the generated file"
             }
         ]
 
