@@ -23,7 +23,7 @@ class FileReader(BaseOperator):
 
     @staticmethod
     def declare_description():
-        return "Reads the content from an uploaded file and returns a string of the file's contents. Supports .pdf, .json, and, .csv filetypes"
+        return "Reads the content from an uploaded file and returns a string of the file's contents. Supports .pdf, .json, .csv, and .txt filetypes"
 
     @staticmethod
     def declare_icon():
@@ -39,6 +39,7 @@ class FileReader(BaseOperator):
             {
                 "name": "uploaded_file",
                 "data_type": "File",
+                "description": "The uploaded file to be read."
             }
         ]
 
@@ -48,7 +49,8 @@ class FileReader(BaseOperator):
             {
                 "name": "uploaded_file_name",
                 "data_type": "string",
-                "optional": "1"
+                "optional": "1",
+                "description": "The name of the uploaded file."
             }
         ]
 
@@ -58,6 +60,7 @@ class FileReader(BaseOperator):
             {
                 "name": "file_contents",
                 "data_type": "string",
+                "description": "The contents of the uploaded file."
             }
         ]
 
