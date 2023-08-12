@@ -19,30 +19,39 @@ class TextSearchInArchive(BaseOperator):
         return "text_search.png"
 
     @staticmethod
+    def declare_description():
+        return "This operator allows you to search for text in an archive table."
+
+    @staticmethod
     def declare_parameters():
         return [
             {
                 "name": "query",
                 "data_type": "string",
-                "placeholder": "Query to search for (can be an input instead of parameter)"
+                "placeholder": "Query to search for (can be an input instead of parameter)",
+                "description": "The text query to search for in the archive table."
             },
             {
                 "name": "num_results",
                 "data_type": "string",
-                "placeholder": "Limit on number of results to return (optional, default=10)"
+                "placeholder": "Limit on number of results to return (optional, default=10)",
+                "description": "The maximum number of search results to return."
             },
             {
                 "name": "table_name",
                 "data_type": "string",
-                "placeholder": "Table name to search in"
+                "placeholder": "Table name to search in",
+                "description": "The name of the table in the archive to search in."
             },
             {
                 "name": "visibility",
                 "data_type": "enum(project,user,public)",
+                "description": "The visibility of the search results: 'project', 'user', or 'public'."
             },
             {
                 "name": "language",
-                "data_type": "enum(english,simple,arabic,armenian,basque,catalan,danish,dutch,finnish,french,german,greek,hindi,hungarian,indonesian,irish,italian,lithuanian,nepali,norwegian,portuguese,romanian,russian,serbian,spanish,swedish,tamil,turkish,yiddish)"
+                "data_type": "enum(english,simple,arabic,armenian,basque,catalan,danish,dutch,finnish,french,german,greek,hindi,hungarian,indonesian,irish,italian,lithuanian,nepali,norwegian,portuguese,romanian,russian,serbian,spanish,swedish,tamil,turkish,yiddish)",
+                "description": "The language used for searching and analyzing the text."
             }
         ]
 
@@ -53,6 +62,7 @@ class TextSearchInArchive(BaseOperator):
                 "name": "query",
                 "data_type": "string",
                 "optional": "1",
+                "description": "The text query to search for in the archive table."
             }
         ]
 
@@ -62,6 +72,7 @@ class TextSearchInArchive(BaseOperator):
             {
                 "name": "search_results",
                 "data_type": "string",
+                "description": "The search results returned as a string."
             }
         ]
 
