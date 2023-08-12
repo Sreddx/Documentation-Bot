@@ -7,7 +7,6 @@ from .util import strip_accents
 
 nlp = spacy.load("en_core_web_sm")
 
-
 class RowDataSearch(BaseOperator):
     @staticmethod
     def declare_name():
@@ -36,12 +35,14 @@ class RowDataSearch(BaseOperator):
             {
                 "name": "nresults",
                 "data_type": "integer",
-                "placeholder": "Enter maximum number of search results. Default is 5."
+                "placeholder": "Enter maximum number of search results. Default is 5.",
+                "description": "The maximum number of search results to return. The default value is 5."
             },
             {
                 "name": "query",
                 "data_type": "string",
-                "placeholder": "Enter your query"
+                "placeholder": "Enter your query",
+                "description": "The query to search for in the input text."
             }
         ]
 
@@ -51,11 +52,13 @@ class RowDataSearch(BaseOperator):
             {
                 "name": "text",
                 "data_type": "string",
+                "description": "The input text to search for the query."
             },
             {
                 "name": "query",
                 "data_type": "string",
-                "optional": "1"
+                "optional": "1",
+                "description": "An alternative query to search for in the input text."
             },
         ]
 
@@ -65,6 +68,7 @@ class RowDataSearch(BaseOperator):
             {
                 "name": "search_result",
                 "data_type": "string",
+                "description": "The lines of the input text that are most relevant to the query."
             }
         ]
 
