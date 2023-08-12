@@ -8,6 +8,10 @@ class LoadAction(BaseOperator):
         return 'Load Action'
 
     @staticmethod
+    def declare_description():
+        return 'This operator loads a stored action.'
+
+    @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.DB.value
 
@@ -21,7 +25,8 @@ class LoadAction(BaseOperator):
             {
                 "name": "action_id",
                 "data_type": "string",
-                "placeholder": "Enter the id of your stored action (or pass it as input))",
+                "placeholder": "Enter the id of your stored action (or pass it as input)",
+                "description": "The ID of the stored action to be loaded."
             }
         ]
 
@@ -31,8 +36,8 @@ class LoadAction(BaseOperator):
             {
                 "name": "action_id",
                 "data_type": "string",
-                "optional": "1"
-
+                "optional": "1",
+                "description": "An alternative way to provide the action ID to be loaded."
             }
         ]
 
@@ -42,6 +47,7 @@ class LoadAction(BaseOperator):
             {
                 "name": "action_data",
                 "data_type": "string",
+                "description": "The data of the loaded action."
             }
         ]
 
