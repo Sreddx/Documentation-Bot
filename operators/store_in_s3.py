@@ -16,6 +16,10 @@ class StoreInS3(BaseOperator):
         return 'Store in S3'
 
     @staticmethod
+    def declare_description():
+        return 'This operator allows you to store a file in an S3 bucket.'
+
+    @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.DB.value
 
@@ -30,19 +34,18 @@ class StoreInS3(BaseOperator):
                 "name": "file_name",
                 "data_type": "string",
                 "placeholder": "example.pdf",
-                "description": "File name (object key) that will be stored in S3, include the file extension if necessary",
-
+                "description": "The name of the file (object key) that will be stored in S3. Include the file extension if necessary.",
             },
             {
                 "name": "s3_bucket",
                 "data_type": "string",
                 "placeholder": "example-s3-bucket-name",
-                "description": "S3 bucket name",
+                "description": "The name of the S3 bucket.",
             },
             {
                 "name": "overwrite",
                 "data_type": "boolean",
-                "description": "By default if a file with the same key exists, it will not be overwritten. Check this box to overwrite."
+                "description": "If a file with the same key exists in the S3 bucket, checking this box allows it to be overwritten. By default, existing files will not be overwritten.",
             }
         ]
 
@@ -51,7 +54,8 @@ class StoreInS3(BaseOperator):
         return [
             {
                 "name": "file_url",
-                "data_type": "string"
+                "data_type": "string",
+                "description": "The URL of the file to be uploaded to S3.",
             }
         ]
 
@@ -61,6 +65,7 @@ class StoreInS3(BaseOperator):
             {
                 "name": "s3_file_uri",
                 "data_type": "string",
+                "description": "The S3 URI of the uploaded file.",
             }
         ]
 
@@ -133,3 +138,4 @@ class StoreInS3(BaseOperator):
 
         ai_context.set_output('s3_file_uri', s3_file_uri, self)
         ai_context.add_to_log(f'Successfully saved file at {s3_file_uri}!')
+
