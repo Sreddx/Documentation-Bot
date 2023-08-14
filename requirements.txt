@@ -16,6 +16,7 @@ reportlab
 python-docx
 tiktoken
 selenium
+selenium-stealth
 shortuuid
 spacy
 google-api-python-client
