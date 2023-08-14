@@ -70,7 +70,8 @@ class CastType(BaseOperator):
         params = step['parameters']
 
         output_type = params.get('output_type')
-        is_comma_separated = params.get('is_comma_separated')
+        is_comma_separated_str = params.get('is_comma_separated')
+        is_comma_separated = True if is_comma_separated_str == "true" else False
 
         if input_type == "Document[]":
             if output_type == 'string':
