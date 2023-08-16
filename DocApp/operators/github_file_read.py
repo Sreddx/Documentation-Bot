@@ -1,12 +1,14 @@
 import json
 import re
-
+from dotenv import load_dotenv
+import os
 from github import Github
 
 from .base_operator import BaseOperator
 
 from ai_context import AiContext
 
+load_dotenv()
 
 class GitHubFileReader(BaseOperator):
     @staticmethod
@@ -89,26 +91,32 @@ class GitHubFileReader(BaseOperator):
             }
         ]
 
-    def run_step(self, step, ai_context: AiContext):
+
+    def run_step(self, step):
         params = step['parameters']
         
         # Fetch parameters or inputs as necessary
-        repo_name = params.get('repo_name') or ai_context.get_input('repo_name', self)
-        folders = params.get('folders') or ai_context.get_input('folders', self)
-        file_regex = params.get('file_regex') or ai_context.get_input('file_regex', self)
-        branch = params.get('branch', 'master') or ai_context.get_input('branch', self)
+        repo_name = params.get('repo_name') 
+        folders = params.get('folders') 
+        file_regex = params.get('file_regex')
+        branch = params.get('branch', 'master')
 
         folders = folders.replace(" ", "").split(',')
+        # print(repo_name, folders, file_regex, branch)
+        
+        self.read_github_files(repo_name, folders, file_regex, branch)
 
-        self.read_github_files(repo_name, folders, file_regex, branch, ai_context)
 
-    def read_github_files(self, repo_name, folders, file_regex, branch, ai_context):
-        g = Github(ai_context.get_secret('github_access_token'))
+    def read_github_files(self, repo_name, folders, file_regex, branch):
+        github_access_token = os.getenv('GITHUB_ACCESS_TOKEN')
+        
+        
+        g = Github(github_access_token)
+
         repo = g.get_repo(repo_name)
-
-        file_names = []
+        file_names = [] 
         file_contents = []
-
+        print(repo)
         def file_matches_regex(file_path, file_regex):
             if not file_regex:
                 return True
@@ -135,10 +143,11 @@ class GitHubFileReader(BaseOperator):
         for folder_path in folders:
             bfs_fetch_files(folder_path)
 
-        ai_context.add_to_log(
-            f"{self.declare_name()} Fetched {len(file_names)} files from GitHub repo {repo_name}:\n\r{file_names}", color='blue', save=True)
+        # ai_context.add_to_log(
+        #     f"{self.declare_name()} Fetched {len(file_names)} files from GitHub repo {repo_name}:\n\r{file_names}", color='blue', save=True)
 
-        ai_context.set_output('file_names', file_names, self)
-        ai_context.set_output('file_contents', file_contents, self)
-        return True
+        # ai_context.set_output('file_names', file_names, self)
+        # ai_context.set_output('file_contents', file_contents, self)
+        # print(file_names)
+        return file_names, file_contents
     

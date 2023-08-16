@@ -1,0 +1,4 @@
+flask
+shortuuid
+openai
+PyGithub
