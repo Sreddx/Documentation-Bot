@@ -36,11 +36,13 @@ def check_regex_with_repo_endpoint():
     if not repo_name or not folders or not file_regex or not branch:
         return jsonify({"error": "All parameters must be provided!"}), 400  # Bad Request
 
-    # Call the function and get the result
-    file_names = DocsGenerator.check_regex_with_repo(repo_name, folders, file_regex, branch)
-    
-    return jsonify({f"Checked regex:{file_regex} for files from repo {repo_name} in branch {branch}:": file_names})
-
+    try:
+        # Call the function and get the result
+        file_names = DocsGenerator.check_regex_with_repo(repo_name, folders, file_regex, branch)
+        
+        return jsonify({f"Checked regex:{file_regex} for files from repo {repo_name} in branch {branch}:": file_names})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 if __name__ == "__main__":
     app.run()
