@@ -1,7 +1,24 @@
 import json
-
+import openai
 from .base_operator import BaseOperator
 
+def run_chat_completion(self, msgs=None, prompt=None):
+        openai.api_key = self.get_secret('OPENAI_TOKEN')
+    
+        mn = 'gpt-3.5-turbo'
+        temperature = 1.0
+        
+        if prompt is not None:
+            msgs = [{"role": "user", "content": prompt}]
+        
+        completion = openai.ChatCompletion.create(
+            model=mn,
+            messages=msgs,
+            temperature=(float(temperature) if temperature is not None else None)
+        )
+
+        res = completion.choices[0].message.content
+        return res
 
 class AskChatGpt(BaseOperator):
     @staticmethod
@@ -70,19 +87,23 @@ class AskChatGpt(BaseOperator):
             }
         ]
 
+
+
+    
+    
     def run_step(self, step, ai_context):
         p = step['parameters']
         question = p.get('question') or ai_context.get_input('question', self)
         # We want to take context both from parameter and input.
-        input_context = ai_context.get_input('context', self)
+        # input_context = ai_context.get_input('context', self)
         parameter_context = p.get('context')
 
         # Currently only supports one function as input. Will refactor once multiple inputs are supported for operators.
-        function = ai_context.get_input('function', self)
+        # function = ai_context.get_input('function', self)
 
         context = ''
-        if input_context:
-            context += f'[{input_context}]'
+        # if input_context:
+        #     context += f'[{input_context}]'
 
         if parameter_context:
             context += f'[{parameter_context}]'
@@ -92,7 +113,7 @@ class AskChatGpt(BaseOperator):
 
         if function:
             functions = [json.loads(function)] if function else None
-            ai_response = ai_context.run_chat_completion(
+            ai_response = run_chat_completion(
                 prompt=question, functions=functions)
 
         else:
@@ -103,6 +124,7 @@ class AskChatGpt(BaseOperator):
         if function:
             ai_response = self.function_response_to_json(ai_response)
 
+        
         ai_context.set_output('chatgpt_response', ai_response, self)
         ai_context.add_to_log(
             f'Response from ChatGPT: {ai_response}', save=True)

@@ -6,17 +6,17 @@ import os
 # Set dictionary for repo_info
 repo_info = {
     "parameters": {
-        "repo_name": "Sreddx/oracooool",
+        "repo_name": "iNBest-cloud/Telematica_AI_0723",
         "folders": "src",
         "file_regex": ".*(\.py|\.js)",
         "branch": "main"
     },
 }
 # Set variables for repo_info
-repo_name = "iNBest-cloud/INBestGpt_Front0623"
+repo_name = "iNBest-cloud/Telematica_AI_0723"
 folders = repo_info["parameters"]["folders"].replace(" ", "").split(',')
 file_regex = ".*.tsx"
-branch = "dev"
+branch = "develop"
 
 # We will test the github file reader operator here with the corresponding credentials before creating an endpoint for it
 
