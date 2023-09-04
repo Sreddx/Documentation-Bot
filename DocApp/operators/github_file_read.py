@@ -100,12 +100,57 @@ class GitHubFileReader(BaseOperator):
         params = step['parameters']
         self.read_github_files(params, ai_context)
             
-            
+    
+    def retrieve_github_files(self, params, ai_context : AiContext):
+        repo_name = params['repo_name']
+        folders = params.get('folders').replace(" ", "").split(',')
+        file_regex = params.get('file_regex')
+        branch = params.get('branch', 'main')
+        
+        print(f"Checking regex:{file_regex} for files from repo {repo_name} in branch {branch}...")
+        
+        g = Github(ai_context.get_secret('GITHUB_ACCESS_TOKEN'))
+        repo = g.get_repo(repo_name)
+
+        matching_files = []
+
+        def file_matches_regex(file_path, file_regex):
+            if not file_regex:
+                return True
+            return re.fullmatch(file_regex, file_path)
+
+        def bfs_check_files(folder_path):
+            queue = [folder_path]
+
+            while queue:
+                current_folder = queue.pop(0)
+                
+                try:
+                    contents = repo.get_dir_contents(current_folder, ref=branch)
+                    
+                    for item in contents:
+                        if item.type == "file" and file_matches_regex(item.path, file_regex):
+                            matching_files.append(item.path)
+
+                        elif item.type == "dir":
+                            queue.append(item.path)
+                except Exception as e:
+                    ai_context.add_to_log(f"Error fetching content for {current_folder}: {str(e)}", color='red', save=True)
+                    continue
+
+        for folder_path in folders:
+            bfs_check_files(folder_path)
+        
+        ai_context.add_to_log(f"Fetched {len(matching_files)} files from GitHub repo {repo_name}:\n\r{matching_files}", color='blue', save=True)
+        ai_context.set_output('matching_files', matching_files,self)
+        return True
+
+
     def read_github_files(self, params, ai_context):
         repo_name = params['repo_name']
         folders = params.get('folders').replace(" ", "").split(',')
         file_regex = params.get('file_regex')
-        branch = params.get('branch', 'master')
+        branch = params.get('branch', 'main')
         print(f"Reading files from repo {repo_name} in branch {branch}...")
         g = Github(ai_context.get_secret('GITHUB_ACCESS_TOKEN'))
         

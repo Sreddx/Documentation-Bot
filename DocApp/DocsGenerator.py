@@ -5,21 +5,21 @@ from mock_ai_context import MockAiContext
 def check_regex_with_repo(repo_name, folders, file_regex, branch):
     # Create dictionary for repo_info
     repo_info = {
-        "parameters": {
-            "repo_name": repo_name,
-            "folders": folders,
-            "file_regex": file_regex,
-            "branch": branch
-        },
+
+        "repo_name": repo_name,
+        "folders": folders,
+        "file_regex": file_regex,
+        "branch": branch
+
     }
 
     # Create mock ai context
     test_ai_context = MockAiContext()
-    test_ai_context.set_input("context", "")
+    
 
     # Get repo file names and contents into ai context
-    GitHubFileReader().run_step(repo_info, test_ai_context)
-    return test_ai_context.get_output("file_names")
+    GitHubFileReader().retrieve_github_files(repo_info, test_ai_context)
+    return test_ai_context.get_output("matching_files")
 
     
 
