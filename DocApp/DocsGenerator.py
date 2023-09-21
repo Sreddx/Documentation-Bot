@@ -3,17 +3,7 @@ from operators.github_file_read import GitHubFileReader
 from operators.github_docs_writer import GitHubDocsWriter
 from mock_ai_context import MockAiContext
 
-def check_regex_with_repo(repo_name, folders, file_regex, branch):
-    # Create dictionary for repo_info
-    repo_info = {
-
-        "repo_name": repo_name,
-        "folders": folders,
-        "file_regex": file_regex,
-        "branch": branch
-
-    }
-
+def check_regex_with_repo(repo_info):
     # Create mock ai context
     test_ai_context = MockAiContext()
     

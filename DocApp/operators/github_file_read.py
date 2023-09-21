@@ -108,7 +108,7 @@ class GitHubFileReader(BaseOperator):
         branch = params.get('branch', 'main')
         
         print(f"Checking regex:{file_regex} for files from repo {repo_name} in branch {branch}...")
-        
+        print(folders)
         g = Github(ai_context.get_secret('GITHUB_ACCESS_TOKEN'))
         repo = g.get_repo(repo_name)
 
@@ -124,10 +124,8 @@ class GitHubFileReader(BaseOperator):
 
             while queue:
                 current_folder = queue.pop(0)
-                
                 try:
                     contents = repo.get_dir_contents(current_folder, ref=branch)
-                    
                     for item in contents:
                         if item.type == "file" and file_matches_regex(item.path, file_regex):
                             matching_files.append(item.path)
@@ -137,8 +135,9 @@ class GitHubFileReader(BaseOperator):
                 except Exception as e:
                     ai_context.add_to_log(f"Error fetching content for {current_folder}: {str(e)}", color='red', save=True)
                     continue
-
+        
         for folder_path in folders:
+            print(folder_path)
             bfs_check_files(folder_path)
         
         ai_context.add_to_log(f"Fetched {len(matching_files)} files from GitHub repo {repo_name}:\n\r{matching_files}", color='blue', save=True)
