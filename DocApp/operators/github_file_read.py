@@ -103,7 +103,7 @@ class GitHubFileReader(BaseOperator):
     
     def retrieve_github_files(self, params, ai_context : AiContext):
         repo_name = params['repo_name']
-        folders = params.get('folders').replace(" ", "").split(',')
+        folders = params.get('folders')
         file_regex = params.get('file_regex')
         branch = params.get('branch', 'main')
         
@@ -148,7 +148,7 @@ class GitHubFileReader(BaseOperator):
 
     def read_github_files(self, params, ai_context):
         repo_name = params['repo_name']
-        folders = params.get('folders').replace(" ", "").split(',')
+        folders = params.get('folders')
         file_regex = params.get('file_regex')
         branch = params.get('branch', 'main')
         print(f"Reading files from repo {repo_name} in branch {branch}...")

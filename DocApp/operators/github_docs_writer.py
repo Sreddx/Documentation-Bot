@@ -64,7 +64,7 @@ class GitHubDocsWriter(BaseOperator):
         repo = g.get_repo(params['repo_name'])
         forked_repo = repo.create_fork()
 
-        base_branch_name = 'main'
+        base_branch_name = 'develop'
         base_branch = repo.get_branch(base_branch_name)
 
         all_files = []
@@ -78,18 +78,18 @@ class GitHubDocsWriter(BaseOperator):
                 all_files.append(str(file).replace(
                     'ContentFile(path="', '').replace('")', ''))
 
-        new_branch_name = f"agent_hub_{ai_context.get_run_id()}"
+        new_branch_name = "iNbestDocsGenerator"
         GitHubDocsWriter.create_branch_with_backoff(
             forked_repo, new_branch_name, base_branch.commit.sha)
 
-        run_url = f'https://agenthub.dev/pipeline?run_id={ai_context.get_run_id()}'
+        run_url = "iNbest documentation bot"
 
         for file_name, file_content_string in zip(file_names, file_contents):
             file_path = file_name
             name = os.path.splitext(os.path.basename(file_path))[0] + '.md'
             docs_file_name = params['docs_folder_name'] + '/' + name
 
-            commit_message = f"{file_path} - commit created by {run_url}"
+            commit_message = f"{file_path} - commit created by iNbest documentation bot"
 
             if docs_file_name in all_files:
                 file = repo.get_contents(docs_file_name, ref=base_branch_name)
