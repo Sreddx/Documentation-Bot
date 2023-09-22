@@ -53,6 +53,7 @@ class GitHubDocsWriter(BaseOperator):
 
     def run_step(
         self,
+        branch,
         step,
         ai_context: AiContext
     ):
@@ -64,7 +65,7 @@ class GitHubDocsWriter(BaseOperator):
         repo = g.get_repo(params['repo_name'])
         forked_repo = repo.create_fork()
 
-        base_branch_name = 'develop'
+        base_branch_name = branch
         base_branch = repo.get_branch(base_branch_name)
 
         all_files = []
@@ -78,7 +79,7 @@ class GitHubDocsWriter(BaseOperator):
                 all_files.append(str(file).replace(
                     'ContentFile(path="', '').replace('")', ''))
 
-        new_branch_name = "iNbestDocsGenerator - " + str(int(time.time()))
+        new_branch_name = "iNbestDocsGenerator-" + str(int(time.time()))
         GitHubDocsWriter.create_branch_with_backoff(
             forked_repo, new_branch_name, base_branch.commit.sha)
 

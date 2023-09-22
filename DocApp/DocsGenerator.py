@@ -105,7 +105,7 @@ def add_docs_to_repo(context,repo_name, folders, file_regex, branch, docs_folder
     }
     try:
         # Run the GitHubDocsWriter operator to add docs to the repo
-        GitHubDocsWriter().run_step(step, ai_context)
+        GitHubDocsWriter().run_step(branch,step, ai_context)
 
         print(f"Documentation added to {repo_name}/{docs_folder_name} successfully!")
         return "Ok"
