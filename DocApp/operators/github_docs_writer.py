@@ -78,7 +78,7 @@ class GitHubDocsWriter(BaseOperator):
                 all_files.append(str(file).replace(
                     'ContentFile(path="', '').replace('")', ''))
 
-        new_branch_name = "iNbestDocsGenerator"
+        new_branch_name = "iNbestDocsGenerator - " + str(int(time.time()))
         GitHubDocsWriter.create_branch_with_backoff(
             forked_repo, new_branch_name, base_branch.commit.sha)
 

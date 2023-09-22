@@ -16,10 +16,9 @@ def check_regex_with_repo(repo_info):
 
     
 
-def generate_docs(context,repo_name, folders, file_regex, branch):
+def generate_docs(ai_context,context,repo_name, folders, file_regex, branch):
 
-    if not repo_name or not folders or not file_regex or not branch:
-        raise ValueError("All parameters must have a non-empty value!")
+    
     # Create dictionary for repo_info
     repo_info = {
         "parameters": {
@@ -29,7 +28,6 @@ def generate_docs(context,repo_name, folders, file_regex, branch):
             "branch": branch
         },
     }
-
     # Create dictionary for prompt info
     prompt_info = {
         "parameters": {
@@ -37,28 +35,26 @@ def generate_docs(context,repo_name, folders, file_regex, branch):
             "function": ""
         },
     }
-
-    # Create mock ai context
-    test_ai_context = MockAiContext()
     
 
     # Get repo file names and contents into ai context
-    GitHubFileReader().run_step(repo_info, test_ai_context)
     
-    num_files_to_read = len(test_ai_context.get_output("file_names"))
+    GitHubFileReader().run_step(repo_info, ai_context)
+    
+    num_files_to_read = len(ai_context.get_output("file_names"))
     docs = {}
     
     
 
     # Generate documentation for each file
     for i in range(num_files_to_read):
-        test_ai_context.set_input("context", context)
-        test_ai_context.set_input("question", prompt_info["parameters"]["question"] + "- The following code is the file Content:" + test_ai_context.get_output("file_contents")[i])
+        ai_context.set_input("context", context)
+        ai_context.set_input("question", prompt_info["parameters"]["question"] + "- The following code is the file Content:" + ai_context.get_output("file_contents")[i])
         try:
-            AskChatGpt().run_step(prompt_info, test_ai_context)
-            docs[test_ai_context.get_output("file_names")[i]] = test_ai_context.get_output("chatgpt_response")
+            AskChatGpt().run_step(prompt_info, ai_context)
+            docs[ai_context.get_output("file_names")[i]] = ai_context.get_output("chatgpt_response")
         except Exception as e:
-            print("Error in generating documentation for file: " + test_ai_context.get_output("file_names")[i])
+            print("Error in generating documentation for file: " + ai_context.get_output("file_names")[i])
             print(str(e))
             continue
     print(f'Documentation generated for {num_files_to_read} files successfully!')
@@ -66,9 +62,9 @@ def generate_docs(context,repo_name, folders, file_regex, branch):
     
 
     # Save the documentation in TestDocs folder
-    for file_name, file_content in docs.items():
-        with open("TestDocs/" + file_name.replace("/", "_") + ".txt", "w") as f:
-            f.write(file_content)
+    # for file_name, file_content in docs.items():
+    #     with open("TestDocs/" + file_name.replace("/", "_") + ".md", "w") as f:
+    #         f.write(file_content)
     return docs
 
 
@@ -85,17 +81,18 @@ def add_docs_to_repo(context,repo_name, folders, file_regex, branch, docs_folder
     Returns:
     - Success message if the docs are added successfully.
     """
+    ai_context = MockAiContext()
     try:
         # Generate the documentation using the generate_docs function
-        docs = generate_docs(context, repo_name, folders, file_regex, branch)
+        docs = generate_docs(ai_context,context, repo_name, folders, file_regex, branch)
     except Exception as e:
+        print("Error in generating docs: " + str(e))
         return str(e)
     # Prepare the data for the GitHubDocsWriter operator
     file_names = [f"{docs_folder_name}/{name.replace('/', '_')}.md" for name in docs.keys()]
     file_contents = list(docs.values())
 
     # Create an AI context
-    ai_context = MockAiContext()
     ai_context.set_input("file_names", file_names)
     ai_context.set_input("file_contents", file_contents)
 

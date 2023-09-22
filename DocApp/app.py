@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import json
 import DocsGenerator 
+from mock_ai_context import MockAiContext
 app = Flask(__name__)
 
 @app.route("/")
@@ -11,6 +12,7 @@ def index():
 
 @app.route("/generate_docs", methods=['POST'])
 def generate_docs_endpoint():
+    ai_context = MockAiContext()
     data = request.json
 
     repo_name = data.get('repo_name', "") # iNBest-cloud/Telematica_AI_0723
@@ -30,9 +32,10 @@ def generate_docs_endpoint():
 
 
     try:
-        docs = DocsGenerator.generate_docs(context,repo_name, folders, file_regex, branch)
+        docs = DocsGenerator.generate_docs(ai_context,context,repo_name, folders, file_regex, branch)
         return jsonify(docs)
     except ValueError as e:
+        print(str(e))
         return jsonify({"error": str(e)}), 400  # 400 is HTTP status code for Bad Request
     
 @app.route("/check_regex_with_repo", methods=['POST'])
@@ -50,6 +53,7 @@ def check_regex_with_repo_endpoint():
         "branch": branch
 
     }
+    
     # Make sure all necessary parameters are provided
     if not repo_name or not folders or not file_regex or not branch:
         return jsonify({"error": "All parameters must be provided!"}), 400  # Bad Request
@@ -69,11 +73,11 @@ def add_docs_to_repo_endpoint():
 
         context = data.get('context')
         repo_name = data.get('repo_name')
-        folders = data.get('folders')
+        folders = data.get('folders').replace(" ", "").split(',')
         file_regex = data.get('file_regex')
         branch = data.get('branch')
         docs_folder_name = data.get('docs_folder_name')
-
+        
         # Ensure all required parameters are provided
         if not context or not repo_name or not folders or not file_regex or not branch or not docs_folder_name:
             return jsonify({"error": "All parameters must be provided!"}), 400  # Bad Request

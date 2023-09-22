@@ -3,6 +3,7 @@ import re
 from dotenv import load_dotenv
 import os
 from github import Github
+import traceback
 
 from .base_operator import BaseOperator
 
@@ -98,6 +99,7 @@ class GitHubFileReader(BaseOperator):
         ai_context : AiContext
     ):
         params = step['parameters']
+        print("hola")
         self.read_github_files(params, ai_context)
             
     
@@ -152,16 +154,20 @@ class GitHubFileReader(BaseOperator):
         branch = params.get('branch', 'main')
         print(f"Reading files from repo {repo_name} in branch {branch}...")
         g = Github(ai_context.get_secret('GITHUB_ACCESS_TOKEN'))
+        try:
+            repo = g.get_repo(repo_name)
+            print(repo)
+        except Exception as e:
+            print("Error in getting repo: " + str(e))
+            print(traceback.format_exc())
+            raise e
         
-        repo = g.get_repo(repo_name)
-
         file_names = []
         file_contents = []
 
         def file_matches_regex(file_path, file_regex):
             if not file_regex:
                 return True
-
             return re.fullmatch(file_regex, file_path)
 
         def bfs_fetch_files(folder_path):
@@ -169,22 +175,31 @@ class GitHubFileReader(BaseOperator):
 
             while queue:
                 current_folder = queue.pop(0)
-
-                contents = repo.get_contents(current_folder, ref=branch)
+                
+                try:
+                    contents = repo.get_contents(current_folder, ref=branch)
+                except Exception as e:
+                    print(f"Error in getting contents of {current_folder}: " + str(e))
+                    print(traceback.format_exc())
+                    continue
 
                 for item in contents:
-                    if item.type == "file" and file_matches_regex(item.path, file_regex):
-                        file_content = item.decoded_content.decode('utf-8')
-                        file_names.append(item.path)
-                        file_contents.append(file_content)
+                    print(f"Processing {item.path}")
+                    try:
+                        if item.type == "file" and file_matches_regex(item.path, file_regex):
+                            file_content = item.decoded_content.decode('utf-8')
+                            file_names.append(item.path)
+                            file_contents.append(file_content)
 
-                    elif item.type == "dir":
-                        queue.append(item.path)
+                        elif item.type == "dir":
+                            queue.append(item.path)
+                    except Exception as e:
+                        print(f"Error in processing {item.path}: " + str(e))
+                        print(traceback.format_exc())
+                        continue
 
         for folder_path in folders:
             bfs_fetch_files(folder_path)
-
-        
 
         ai_context.add_to_log(f"{self.declare_name()} Fetched {len(file_names)} files from GitHub repo {repo_name}:\n\r{file_names}", color='blue', save=True)
 
