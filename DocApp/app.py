@@ -20,7 +20,7 @@ def generate_docs_endpoint():
     file_regex = data.get('file_regex', "") #.*.tsx
     branch = data.get('branch', "") # develop
     folders = folders.replace(" ", "").split(',')
-    context=""
+    context=data.get('context', "")
     repo_info = {
         "parameters": {
             "repo_name": repo_name,

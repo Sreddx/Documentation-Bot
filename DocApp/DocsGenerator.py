@@ -62,9 +62,12 @@ def generate_docs(ai_context,context,repo_name, folders, file_regex, branch):
     
 
     # Save the documentation in TestDocs folder
-    # for file_name, file_content in docs.items():
-    #     with open("TestDocs/" + file_name.replace("/", "_") + ".md", "w") as f:
-    #         f.write(file_content)
+    try:
+        for file_name, file_content in docs.items():
+            with open("TestDocs/" + file_name.replace("/", "_") + ".md", "w") as f:
+                f.write(file_content)
+    except Exception as e:
+        print("Error in saving documentation to TestDocs folder:" + str(e))
     return docs
 
 
