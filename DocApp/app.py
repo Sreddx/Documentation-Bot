@@ -45,12 +45,14 @@ def check_regex_with_repo_endpoint():
     folders = data.get('folders').split(',')
     file_regex = data.get('file_regex')
     branch = data.get('branch')
+    specific_files = data.get('specific_files')
     repo_info = {
 
         "repo_name": repo_name,
         "folders": folders,
         "file_regex": file_regex,
-        "branch": branch
+        "branch": branch,
+        'specific_files': specific_files
 
     }
     
@@ -77,12 +79,13 @@ def add_docs_to_repo_endpoint():
         file_regex = data.get('file_regex')
         branch = data.get('branch')
         docs_folder_name = data.get('docs_folder_name')
+        specific_files = data.get('specific_files')
         
         # Ensure all required parameters are provided
         if not context or not repo_name or not folders or not file_regex or not branch or not docs_folder_name:
             return jsonify({"error": "All parameters must be provided!"}), 400  # Bad Request
 
-        result = DocsGenerator.add_docs_to_repo(context, repo_name, folders, file_regex, branch, docs_folder_name)
+        result = DocsGenerator.add_docs_to_repo(context, repo_name, folders, file_regex, branch, docs_folder_name, specific_files)
 
         if result == "Ok":
             return jsonify({"message": "Documentation added successfully!"}), 200

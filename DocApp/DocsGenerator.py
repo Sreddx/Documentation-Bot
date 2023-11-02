@@ -16,7 +16,7 @@ def check_regex_with_repo(repo_info):
 
     
 
-def generate_docs(ai_context,context,repo_name, folders, file_regex, branch):
+def generate_docs(ai_context,context,repo_name, folders, file_regex, branch,specific_files):
 
     
     # Create dictionary for repo_info
@@ -25,7 +25,8 @@ def generate_docs(ai_context,context,repo_name, folders, file_regex, branch):
             "repo_name": repo_name,
             "folders": folders,
             "file_regex": file_regex,
-            "branch": branch
+            "branch": branch,
+            'specific_files': specific_files
         },
     }
     # Create dictionary for prompt info
@@ -62,16 +63,16 @@ def generate_docs(ai_context,context,repo_name, folders, file_regex, branch):
     
 
     # Save the documentation in TestDocs folder
-    try:
-        for file_name, file_content in docs.items():
-            with open("TestDocs/" + file_name.replace("/", "_") + ".md", "w") as f:
-                f.write(file_content)
-    except Exception as e:
-        print("Error in saving documentation to TestDocs folder:" + str(e))
+    # try:
+    #     for file_name, file_content in docs.items():
+    #         with open("TestDocs/" + file_name.replace("/", "_") + ".md", "w") as f:
+    #             f.write(file_content)
+    # except Exception as e:
+    #     print("Error in saving documentation to TestDocs folder:" + str(e))
     return docs
 
 
-def add_docs_to_repo(context,repo_name, folders, file_regex, branch, docs_folder_name):
+def add_docs_to_repo(context,repo_name, folders, file_regex, branch, docs_folder_name,specific_files):
     """
     This function generates documentation for a repo and adds the docs back to a specified folder 
     in the repo.
@@ -87,7 +88,7 @@ def add_docs_to_repo(context,repo_name, folders, file_regex, branch, docs_folder
     ai_context = MockAiContext()
     try:
         # Generate the documentation using the generate_docs function
-        docs = generate_docs(ai_context,context, repo_name, folders, file_regex, branch)
+        docs = generate_docs(ai_context,context, repo_name, folders, file_regex, branch,specific_files)
     except Exception as e:
         print("Error in generating docs: " + str(e))
         return str(e)
