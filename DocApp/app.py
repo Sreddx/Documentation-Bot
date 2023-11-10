@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import json
 import DocsGenerator 
+from MainDocumentation import GenerateMainDocumentation
 from mock_ai_context import MockAiContext
 app = Flask(__name__)
 
@@ -91,6 +92,24 @@ def add_docs_to_repo_endpoint():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route("/readRepo", methods=['POST'])
+def read_repository():
+    try:
+        request_data = request.json
+        repo_info = {
+            "parameters": {
+                "repo_name": request_data.get('repo_name'),
+                "folders": request_data.get('folders').replace(" ", "").split(','),
+                "file_regex": request_data.get('file_regex'),
+                "branch": request_data.get('branch')
+            }
+        }
+        response = GenerateMainDocumentation(repo_info)
+        return response
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run()

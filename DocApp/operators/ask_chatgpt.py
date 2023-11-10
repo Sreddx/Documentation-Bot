@@ -74,8 +74,8 @@ class AskChatGpt(BaseOperator):
 
     
     
-    def run_step(self, step, ai_context):
-        p = step['parameters']
+    def run_step(self,prompt_info, instruction, ai_context):
+        instruction = instruction
         question = ai_context.get_input('question', self)
         # We want to take context both from parameter and input.
         input_context = ai_context.get_input('context', self)
@@ -84,15 +84,16 @@ class AskChatGpt(BaseOperator):
         context = ''
         if input_context:
             context += f'[{input_context}]'
-        
+        # print(context)
         # if parameter_context:
         #     context += f'[{parameter_context}]'
 
         if context:
-            question = f'Given the context: {context}, answer the question or complete the following task: {question}'
+            question = f'Given the previous: {context}, process the following text to complete the task: {question}'
 
-        print(f'------------------------------------Question: {question}')
-        ai_response = ai_context.run_chat_completion(prompt=question)
+        # print(f'------------------------------------Question: {question}')
+        
+        ai_response = ai_context.run_chat_completion(instruction,prompt=question)
 
         ai_response = str(ai_response)
         

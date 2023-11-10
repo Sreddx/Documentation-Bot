@@ -1,7 +1,9 @@
 from unittest.mock import Mock, patch
-
+import tiktoken
 import openai
 import os
+
+encoding = tiktoken.encoding_for_model("gpt-4")
 
 class MockAiContext:
     def __init__(self):
@@ -29,20 +31,44 @@ class MockAiContext:
         self.log.append(message)
 
     def run_chat_completion(self, msgs=None, prompt=None):
-        openai.api_key = self.get_secret('OPENAI_TOKEN')
-    
-        mn = 'gpt-3.5-turbo'
-        temperature = 1.0
         
-        if prompt is not None:
-            msgs = [{"role": "user", "content": prompt}]
-        
-        completion = openai.ChatCompletion.create(
-            model=mn,
-            messages=msgs,
-            temperature=(float(temperature) if temperature is not None else None)
-        )
+        openai.api_key = os.environ['AZURE_OPENAI_KEY']
+        openai.api_type = "azure"
+        openai.api_base = os.environ["AZURE_OPENAI_ENDPOINT"]
+        openai.api_version = '2023-05-15'
+        deployment_name = "reportes-msp"
 
+        if not openai.api_key:
+            raise ValueError("AZURE_OPENAI_KEY environment variable is not set.")
+
+        max_tokens = 32000
+        mn = 'gpt-4'
+        temperature = 1.5
+        tokens = encoding.encode(prompt, allowed_special="all")
+        token_count = len(tokens)
+        print(f"Token count: {token_count}")
+
+        chat=[
+            {"role": "system", "content": msgs},
+            {"role": "user", "content": prompt},
+        ]
+        # print(chat)
+        # if prompt is not None:
+        #     msgs = [{"role": "user", "content": prompt}]
+        # print(msgs)
+        try:
+            completion = openai.ChatCompletion.create(
+                messages=chat,
+                temperature=temperature,
+                engine=deployment_name,
+                max_tokens=max_tokens-token_count,
+                n=1,
+                stop=None,
+            )
+        except Exception as e:
+            print(f"Exception: {e}")
+            return str(e)
+        print("hola")
         res = completion.choices[0].message.content
         return res
         
