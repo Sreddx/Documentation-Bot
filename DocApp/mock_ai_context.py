@@ -46,6 +46,7 @@ class MockAiContext:
         )
 
         res = completion.choices[0].message
+        
         return res
         
     # Methods below are not supposed to be used by operators.

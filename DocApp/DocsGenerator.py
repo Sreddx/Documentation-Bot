@@ -30,7 +30,7 @@ def generate_docs(ai_context,context,repo_name, folders, file_regex, branch):
     # Create dictionary for prompt info
     prompt_info = {
         "parameters": {
-            "question": "Generate Markdown documentation for this code. This documentation is meant to summarize the purpose and technical details of this code file.Use headings to breakdown the documentation into the following sections: Summary: A one sentence summary of this component's functionality. Inputs: briefly describe the inputs and their purpose. Dependencies: briefly describe dependencies and their purpose. Functions: brief summary of functions present in the code. Requests: in case the code sends request to an API or something outside of the application describe the request including headers, parameters and payload. Outputs: briefly describe outputs and their purpose.",
+            "question": "Generar documentación de Markdown para este código. Esta documentación tiene como objetivo resumir el propósito y los detalles técnicos de este archivo de código. Utilice encabezados para dividir la documentación en las siguientes secciones: Resumen: un resumen de una oración de la funcionalidad de este componente. Entradas: describa brevemente las entradas y su propósito. Dependencias: describa brevemente las dependencias y su propósito. Funciones: breve resumen de las funciones presentes en el código. Solicitudes: en caso de que el código envíe una solicitud a una API o algo fuera de la aplicación, describa la solicitud, incluidos los encabezados, los parámetros y la carga útil. Salidas: describa brevemente las salidas y su propósito.",
             "function": ""
         },
     }
@@ -48,7 +48,7 @@ def generate_docs(ai_context,context,repo_name, folders, file_regex, branch):
     # Generate documentation for each file
     for i in range(num_files_to_read):
         ai_context.set_input("context", context)
-        ai_context.set_input("question", prompt_info["parameters"]["question"] + "- The following code is the file Content:" + ai_context.get_output("file_contents")[i])
+        ai_context.set_input("question", prompt_info["parameters"]["question"] + "- El siguiente codigo es el contenido del archivo:" + ai_context.get_output("file_contents")[i])
         try:
             AskChatGpt().run_step(prompt_info, ai_context)
             docs[ai_context.get_output("file_names")[i]] = ai_context.get_output("chatgpt_response")
@@ -63,11 +63,11 @@ def generate_docs(ai_context,context,repo_name, folders, file_regex, branch):
     # Save the documentation in TestDocs folder
     try:
         for file_name, file_content in docs.items():
-            with open("TestDocs/" + file_name.replace("/", "_") + ".md", "w") as f:
+            with open("TestDocs/" + file_name.replace("/", "_") + ".md", "w", encoding="utf-8") as f:
                 f.write(file_content)
     except Exception as e:
-        print("Error in saving documentation to TestDocs folder:" + str(e))
-    return docs
+        print("Error in saving documentation to TestDocs folder: " + str(e))
+    return "docs generated successfully"
 
 
 def add_docs_to_repo(context,repo_name, folders, file_regex, branch, docs_folder_name):
