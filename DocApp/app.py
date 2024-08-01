@@ -4,6 +4,11 @@ import DocsGenerator
 from mock_ai_context import MockAiContext
 app = Flask(__name__)
 
+# Load dot env
+from dotenv import load_dotenv
+load_dotenv()
+
+
 @app.route("/")
 def index():
     return "Hello, world!"

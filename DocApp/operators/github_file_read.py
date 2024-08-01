@@ -99,7 +99,7 @@ class GitHubFileReader(BaseOperator):
         ai_context : AiContext
     ):
         params = step['parameters']
-        print("hola")
+ 
         self.read_github_files(params, ai_context)
             
     
@@ -109,8 +109,7 @@ class GitHubFileReader(BaseOperator):
         file_regex = params.get('file_regex')
         branch = params.get('branch', 'main')
         
-        print(f"Checking regex:{file_regex} for files from repo {repo_name} in branch {branch}...")
-        print(folders)
+
         g = Github(ai_context.get_secret('GITHUB_ACCESS_TOKEN'))
         repo = g.get_repo(repo_name)
 
@@ -139,7 +138,7 @@ class GitHubFileReader(BaseOperator):
                     continue
         
         for folder_path in folders:
-            print(folder_path)
+
             bfs_check_files(folder_path)
         
         ai_context.add_to_log(f"Fetched {len(matching_files)} files from GitHub repo {repo_name}:\n\r{matching_files}", color='blue', save=True)
@@ -152,7 +151,7 @@ class GitHubFileReader(BaseOperator):
         folders = params.get('folders')
         file_regex = params.get('file_regex')
         branch = params.get('branch', 'main')
-        print(f"Reading files from repo {repo_name} in branch {branch}...")
+
         g = Github(ai_context.get_secret('GITHUB_ACCESS_TOKEN'))
         try:
             repo = g.get_repo(repo_name)

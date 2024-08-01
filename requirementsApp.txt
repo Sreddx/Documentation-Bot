@@ -2,3 +2,4 @@ flask
 shortuuid
 openai
 PyGithub
+python-dotenv

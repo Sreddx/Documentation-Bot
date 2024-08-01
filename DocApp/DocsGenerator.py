@@ -17,7 +17,6 @@ def check_regex_with_repo(repo_info):
     
 
 def generate_docs(ai_context,context,repo_name, folders, file_regex, branch):
-
     
     # Create dictionary for repo_info
     repo_info = {
