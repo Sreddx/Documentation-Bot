@@ -65,6 +65,7 @@ def check_regex_with_repo_endpoint():
 
     try:
         # Call the function and get the result
+        print(repo_info)
         file_names = DocsGenerator.check_regex_with_repo(repo_info)
         
         return jsonify({f"Checked regex:{file_regex} for files from repo {repo_name} in branch {branch}:": file_names})

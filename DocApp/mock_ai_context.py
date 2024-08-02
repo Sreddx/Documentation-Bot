@@ -31,8 +31,6 @@ class MockAiContext:
         self.log.append(message)
 
     def run_chat_completion(self, msgs=None, prompt=None):
-        
-    
         mn = 'gpt-4o-mini'
         temperature = 1.0
         
@@ -45,9 +43,10 @@ class MockAiContext:
             # temperature=(float(temperature) if temperature is not None else None)
         )
 
-        res = completion.choices[0].message
+        res = completion.choices[0].message.content
+        self.set_output('chatgpt_response', res, self)
         
-        return res
+
         
     # Methods below are not supposed to be used by operators.
     def set_input(self, name, value):

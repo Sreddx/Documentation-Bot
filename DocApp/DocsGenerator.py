@@ -10,6 +10,7 @@ def check_regex_with_repo(repo_info):
 
     # Get repo file names and contents into ai context
     GitHubFileReader().retrieve_github_files(repo_info, test_ai_context)
+    print(test_ai_context.log)
     return test_ai_context.get_output("matching_files")
 
     

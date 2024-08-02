@@ -92,15 +92,11 @@ class AskChatGpt(BaseOperator):
             question = f'Given the context: {context}, answer the question or complete the following task: {question}'
 
         print(f'------------------------------------Question: {question}')
-        ai_response = ai_context.run_chat_completion(prompt=question)
+        ai_context.run_chat_completion(prompt=question)
 
-        ai_response = str(ai_response)
         
         
-        ai_context.set_output('chatgpt_response', ai_response, self)
-        ai_context.add_to_log(
-            f'Response from ChatGPT: {ai_response}', save=True)
-
+        
     def function_response_to_json(self, response):
         try:
             json_dict = json.loads(response)
